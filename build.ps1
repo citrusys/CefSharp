@@ -1,20 +1,20 @@
 ﻿param(
     [ValidateSet("vs2015", "vs2017", "vs2019", "nupkg-only", "gitlink")]
     [Parameter(Position = 0)] 
-    [string] $Target = "vs2015",
+    [string] $Target = "vs2019",
     [Parameter(Position = 1)]
-    [string] $Version = "83.4.2",
+    [string] $Version = "2.2.3",
     [Parameter(Position = 2)]
-    [string] $AssemblyVersion = "83.4.2"
+    [string] $AssemblyVersion = "2.2.3"
 )
 
 $WorkingDir = split-path -parent $MyInvocation.MyCommand.Definition
-$CefSln = Join-Path $WorkingDir 'CefSharp3.sln'
+$FluxonautBrowserSln = Join-Path $WorkingDir 'Fluxonaut.Browser.sln'
 
-# Extract the current CEF Redist version from the CefSharp.Core\packages.config file
+# Extract the current CEF Redist version from the Fluxonaut.Browser.Core\packages.config file
 # Save having to update this file manually Example 3.2704.1418
-$CefSharpCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'CefSharp.Core\Packages.config'))
-$RedistVersion = $CefSharpCorePackagesXml.SelectSingleNode("//packages/package[@id='cef.sdk']/@version").value
+$FluxonautBrowserCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'Fluxonaut.Browser.Core\Packages.config'))
+$RedistVersion = $FluxonautBrowserCorePackagesXml.SelectSingleNode("//packages/package[@id='fluxonaut.browser.sdk']/@version").value
 
 function Write-Diagnostic 
 {
@@ -26,24 +26,6 @@ function Write-Diagnostic
     Write-Host
     Write-Host $Message -ForegroundColor Green
     Write-Host
-}
-
-if (Test-Path Env:\APPVEYOR_BUILD_VERSION)
-{
-    $Version = $env:APPVEYOR_BUILD_VERSION
-}
-
-if ($env:APPVEYOR_REPO_TAG -eq "True")
-{
-    $Version = "$env:APPVEYOR_REPO_TAG_NAME".Substring(1)  # trim leading "v"
-    $AssemblyVersion = $Version
-    #Stip the -pre
-    if($AssemblyVersion.Contains("-pre"))
-    {
-        $AssemblyVersion = $AssemblyVersion.Substring(0, $AssemblyVersion.IndexOf("-pre"))
-    }
-    Write-Diagnostic "Setting Version based on tag to $Version"    
-    Write-Diagnostic "Setting AssemblyVersion based on tag to $AssemblyVersion"    
 }
 
 # https://github.com/jbake/Powershell_scripts/blob/master/Invoke-BatchFile.ps1
@@ -133,57 +115,43 @@ function Msvs
     $VisualStudioVersion = $null
     $VXXCommonTools = $null
 
-    switch -Exact ($Toolchain) {
-        'v140' {
-            if($env:VS140COMNTOOLS -eq $null) {
-                Die "Visual Studio 2015 is not installed on your development machine, unable to continue."
-            }
+    $VS_VER=16;
+    $VS_OFFICIAL_VER=2019;
 
-            $MSBuildExe = join-path -path (Get-ItemProperty "HKLM:\software\Microsoft\MSBuild\ToolsVersions\14.0").MSBuildToolsPath -childpath "msbuild.exe"
-            $MSBuildExe = $MSBuildExe -replace "Framework64", "Framework"
-            $VisualStudioVersion = '14.0'
-            $VXXCommonTools = Join-Path $env:VS140COMNTOOLS '..\..\vc'
-        }
-        {($_ -eq 'v141') -or ($_ -eq 'v142')} {
-            $VS_VER = 15;
-            $VS_OFFICIAL_VER = 2017;
-            if ($_ -eq 'v142'){$VS_VER=16;$VS_OFFICIAL_VER=2019;}
-            $programFilesDir = (${env:ProgramFiles(x86)}, ${env:ProgramFiles} -ne $null)[0]
+    $programFilesDir = (${env:ProgramFiles(x86)}, ${env:ProgramFiles} -ne $null)[0]
 
-            $vswherePath = Join-Path $programFilesDir 'Microsoft Visual Studio\Installer\vswhere.exe'
-            #Check if we already have vswhere which is included in newer versions of VS2017/VS2019
-            if(-not (Test-Path $vswherePath))
-            {
-                Write-Diagnostic "Downloading VSWhere as no install found at $vswherePath"
+    $vswherePath = Join-Path $programFilesDir 'Microsoft Visual Studio\Installer\vswhere.exe'
+    #Check if we already have vswhere which is included in newer versions of VS2017/VS2019
+    if(-not (Test-Path $vswherePath))
+    {
+        Write-Diagnostic "Downloading VSWhere as no install found at $vswherePath"
                 
-                # Check if we already have a local copy and download if required
-                $vswherePath = Join-Path $WorkingDir \vswhere.exe
+        # Check if we already have a local copy and download if required
+        $vswherePath = Join-Path $WorkingDir \vswhere.exe
                 
-                # TODO: Check hash and download if hash differs
-                if(-not (Test-Path $vswherePath))
-                {
-                    $client = New-Object System.Net.WebClient;
-                    $client.DownloadFile('https://github.com/Microsoft/vswhere/releases/download/2.2.11/vswhere.exe', $vswherePath);
-                }
-            }
-            
-            Write-Diagnostic "VSWhere path $vswherePath"
-            
-            $versionSearchStr = "[$VS_VER.0," + ($VS_VER+1) + ".0)"
-            $VS2017InstallPath = & $vswherePath -version $versionSearchStr -property installationPath
-            
-            Write-Diagnostic "$($VS_OFFICIAL_VER)InstallPath: $VS2017InstallPath"
-                
-            if(-not (Test-Path $VS2017InstallPath))
-            {
-                Die "Visual Studio $VS_OFFICIAL_VER is not installed on your development machine, unable to continue."
-            }
-                
-            $MSBuildExe = "msbuild.exe"
-            $VisualStudioVersion = "$VS_VER.0"
-            $VXXCommonTools = Join-Path $VS2017InstallPath VC\Auxiliary\Build
+        # TODO: Check hash and download if hash differs
+        if(-not (Test-Path $vswherePath))
+        {
+            $client = New-Object System.Net.WebClient;
+            $client.DownloadFile('https://github.com/Microsoft/vswhere/releases/download/2.2.11/vswhere.exe', $vswherePath);
         }
     }
+            
+    Write-Diagnostic "VSWhere path $vswherePath"
+            
+    $versionSearchStr = "[$VS_VER.0," + ($VS_VER+1) + ".0)"
+    $VS2019InstallPath = & $vswherePath -version $versionSearchStr -property installationPath
+            
+    Write-Diagnostic "$($VS_OFFICIAL_VER)InstallPath: $VS2019InstallPath"
+                
+    if(-not (Test-Path $VS2019InstallPath))
+    {
+        Die "Visual Studio $VS_OFFICIAL_VER is not installed on your development machine, unable to continue."
+    }
+                
+    $MSBuildExe = "msbuild.exe"
+    $VisualStudioVersion = "$VS_VER.0"
+    $VXXCommonTools = Join-Path $VS2019InstallPath VC\Auxiliary\Build
 
     if ($VXXCommonTools -eq $null -or (-not (Test-Path($VXXCommonTools)))) {
         Die 'Error unable to find any visual studio environment'
@@ -195,15 +163,15 @@ function Msvs
     }
 
     # Only configure build environment once
-    if($env:CEFSHARP_BUILD_IS_BOOTSTRAPPED -eq $null) {
+    if($env:FLUXONAUT_BROWSER_BUILD_IS_BOOTSTRAPPED -eq $null) {
         Invoke-BatchFile $VCVarsAll $Platform
-        $env:CEFSHARP_BUILD_IS_BOOTSTRAPPED = $true
+        $env:FLUXONAUT_BROWSER_BUILD_IS_BOOTSTRAPPED = $true
     }
 
     $Arch = TernaryReturn ($Platform -eq 'x64') 'x64' 'win32'
 
     $Arguments = @(
-        "$CefSln",
+        "$FluxonautBrowserSln",
         "/t:rebuild",
         "/p:VisualStudioVersion=$VisualStudioVersion",
         "/p:Configuration=$Configuration",
@@ -269,7 +237,7 @@ function NugetPackageRestore
     Write-Diagnostic "Restore Nuget Packages"
 
     # Restore packages
-    . $nuget restore $CefSln
+    . $nuget restore $FluxonautBrowserSln
 }
 
 function Nupkg
@@ -289,27 +257,8 @@ function Nupkg
     Write-Diagnostic "Building nuget package"
 
     # Build old packages
-    . $nuget pack nuget\CefSharp.Common.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget -Properties "RedistVersion=$RedistVersion"
-    . $nuget pack nuget\CefSharp.Wpf.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget
-    . $nuget pack nuget\CefSharp.OffScreen.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget
-    . $nuget pack nuget\CefSharp.WinForms.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget
-    
-    # Build newer style packages
-    . $nuget pack nuget\PackageReference\CefSharp.Common.win.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget\PackageReference -Properties "RedistVersion=$RedistVersion;Platform=x86;PlatformNative=Win32"
-    . $nuget pack nuget\PackageReference\CefSharp.Common.win.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget\PackageReference -Properties "RedistVersion=$RedistVersion;Platform=x64;PlatformNative=x64"
-    . $nuget pack nuget\PackageReference\CefSharp.OffScreen.win.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget\PackageReference -Properties "Platform=x86"
-    . $nuget pack nuget\PackageReference\CefSharp.OffScreen.win.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget\PackageReference -Properties "Platform=x64"
-    . $nuget pack nuget\PackageReference\CefSharp.Wpf.win.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget\PackageReference -Properties "Platform=x86"
-    . $nuget pack nuget\PackageReference\CefSharp.Wpf.win.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget\PackageReference -Properties "Platform=x64"
-    . $nuget pack nuget\PackageReference\CefSharp.WinForms.win.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget\PackageReference -Properties "Platform=x86"
-    . $nuget pack nuget\PackageReference\CefSharp.WinForms.win.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget\PackageReference -Properties "Platform=x64"
-
-    # Invoke `AfterBuild` script if available (ie. upload packages to myget)
-    if(-not (Test-Path $WorkingDir\AfterBuild.ps1)) {
-        return
-    }
-
-    . $WorkingDir\AfterBuild.ps1 -Version $Version
+    . $nuget pack nuget\Fluxonaut.Browser.Common.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget -Properties "RedistVersion=$RedistVersion"
+    . $nuget pack nuget\Fluxonaut.Browser.Wpf.nuspec -NoPackageAnalysis -Version $Version -OutputDirectory nuget
 }
 
 function DownloadNuget()
@@ -322,48 +271,21 @@ function DownloadNuget()
     }
 }
 
-function UpdateSymbolsWithGitLink()
-{
-    $gitlink = "GitLink.exe"
-    
-    #Check for GitLink
-    if ((Get-Command $gitlink -ErrorAction SilentlyContinue) -eq $null) 
-    { 
-        #Download if not on path and not in Nuget folder (TODO: change to different folder)
-        $gitlink = Join-Path $WorkingDir .\nuget\GitLink.exe
-        if(-not (Test-Path $gitlink))
-        {
-            Write-Diagnostic "Downloading GitLink"
-            #Powershell is having problems download GitLink SSL/TLS error, force TLS 1.2
-            #https://stackoverflow.com/a/55809878/4583726
-            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::TLS12
-            $client = New-Object System.Net.WebClient;
-            $client.DownloadFile('https://github.com/GitTools/GitLink/releases/download/2.3.0/GitLink.exe', $gitlink);
-        }
-    }
-    
-    Write-Diagnostic "GitLink working dir : $WorkingDir"
-    
-    # Run GitLink in the workingDir
-    . $gitlink $WorkingDir -f CefSharp3.sln -u https://github.com/CefSharp/CefSharp -c Release -p x64 -ignore CefSharp.Example`,CefSharp.Wpf.Example`,CefSharp.OffScreen.Example`,CefSharp.WinForms.Example
-    . $gitlink $WorkingDir -f CefSharp3.sln -u https://github.com/CefSharp/CefSharp -c Release -p x86 -ignore CefSharp.Example`,CefSharp.Wpf.Example`,CefSharp.OffScreen.Example`,CefSharp.WinForms.Example
-}
-
 function WriteAssemblyVersion
 {
     param()
 
-    $Filename = Join-Path $WorkingDir CefSharp\Properties\AssemblyInfo.cs
+    $Filename = Join-Path $WorkingDir Fluxonaut.Browser\Properties\AssemblyInfo.cs
     $Regex = 'public const string AssemblyVersion = "(.*)"';
     $Regex2 = 'public const string AssemblyFileVersion = "(.*)"'
-    $Regex3 = 'public const string AssemblyCopyright = "Copyright © .* The CefSharp Authors"'
+    $Regex3 = 'public const string AssemblyCopyright = "Copyright © .* The Fluxonaut Authors"'
     
     $AssemblyInfo = Get-Content -Encoding UTF8 $Filename
     $CurrentYear = Get-Date -Format yyyy
     
     $NewString = $AssemblyInfo -replace $Regex, "public const string AssemblyVersion = ""$AssemblyVersion"""
     $NewString = $NewString -replace $Regex2, "public const string AssemblyFileVersion = ""$AssemblyVersion.0"""
-    $NewString = $NewString -replace $Regex3, "public const string AssemblyCopyright = ""Copyright © $CurrentYear The CefSharp Authors"""
+    $NewString = $NewString -replace $Regex3, "public const string AssemblyCopyright = ""Copyright © $CurrentYear The Fluxonaut Authors"""
     
     $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
     [System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)
@@ -386,7 +308,7 @@ function WriteVersionToResourceFile($resourceFile)
     $Filename = Join-Path $WorkingDir $resourceFile
     $Regex1 = 'VERSION .*';
     $Regex2 = 'Version", ".*?"';
-    $Regex3 = 'Copyright © .* The CefSharp Authors'
+    $Regex3 = 'Copyright © .* The Fluxonaut Authors'
     
     $ResourceData = Get-Content -Encoding UTF8 $Filename
     $CurrentYear = Get-Date -Format yyyy
@@ -395,7 +317,7 @@ function WriteVersionToResourceFile($resourceFile)
     
     $NewString = $ResourceData -replace $Regex1, "VERSION $CppAssemblyVersion"
     $NewString = $NewString -replace $Regex2, "Version"", ""$AssemblyVersion"""
-    $NewString = $NewString -replace $Regex3, "Copyright © $CurrentYear The CefSharp Authors"
+    $NewString = $NewString -replace $Regex3, "Copyright © $CurrentYear The Fluxonaut Authors"
     
     $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
     [System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)
@@ -403,25 +325,13 @@ function WriteVersionToResourceFile($resourceFile)
 
 function WriteVersionToShfbproj
 {
-    $Filename = Join-Path $WorkingDir CefSharp.shfbproj
+    $Filename = Join-Path $WorkingDir Fluxonaut.Browser.shfbproj
     $Regex1 = '<HelpFileVersion>.*<\/HelpFileVersion>';
     $Regex2 = '<HeaderText>Version .*<\/HeaderText>';
     
     $ShfbprojData = Get-Content -Encoding UTF8 $Filename
     $NewString = $ShfbprojData -replace $Regex1, "<HelpFileVersion>$AssemblyVersion</HelpFileVersion>"
     $NewString = $NewString -replace $Regex2, "<HeaderText>Version $AssemblyVersion</HeaderText>"
-    
-    $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
-    [System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)
-}
-
-function WriteVersionToAppveyor
-{
-    $Filename = Join-Path $WorkingDir appveyor.yml
-    $Regex1 = 'version: .*-CI{build}';
-    
-    $AppveyorData = Get-Content -Encoding UTF8 $Filename
-    $NewString = $AppveyorData -replace $Regex1, "version: $AssemblyVersion-CI{build}"
     
     $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
     [System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)
@@ -435,15 +345,12 @@ NugetPackageRestore
 
 WriteAssemblyVersion
 WriteVersionToShfbproj
-WriteVersionToAppveyor
 
-WriteVersionToManifest "CefSharp.BrowserSubprocess\app.manifest"
-WriteVersionToManifest "CefSharp.OffScreen.Example\app.manifest"
-WriteVersionToManifest "CefSharp.WinForms.Example\app.manifest"
-WriteVersionToManifest "CefSharp.Wpf.Example\app.manifest"
+WriteVersionToManifest "Fluxonaut.Browser.BrowserSubprocess\app.manifest"
+WriteVersionToManifest "Fluxonaut.Browser.Wpf.Example\app.manifest"
 
-WriteVersionToResourceFile "CefSharp.BrowserSubprocess.Core\Resource.rc"
-WriteVersionToResourceFile "CefSharp.Core\Resource.rc"
+WriteVersionToResourceFile "Fluxonaut.Browser.BrowserSubprocess.Core\Resource.rc"
+WriteVersionToResourceFile "Fluxonaut.Browser.Core\Resource.rc"
 
 switch -Exact ($Target)
 {
@@ -451,26 +358,9 @@ switch -Exact ($Target)
     {
         Nupkg
     }
-    "gitlink"
-    {
-        UpdateSymbolsWithGitLink
-    }
-    "vs2015"
-    {
-        VSX v140
-        UpdateSymbolsWithGitLink
-        Nupkg
-    }
-    "vs2017"
-    {
-        VSX v141
-        UpdateSymbolsWithGitLink
-        Nupkg
-    }
     "vs2019"
     {
         VSX v142
-        UpdateSymbolsWithGitLink
         Nupkg
     }
 }

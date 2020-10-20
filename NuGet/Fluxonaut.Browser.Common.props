@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <FluxonautBrowserCommonBinaries32 Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\*.*" />
+    <FluxonautBrowserCommonBinaries64 Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x64\*.*" />
+    <FluxonautBrowserCommonBinariesAnyCPU Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\**\*.*" />
+
+    <FluxonautBrowserProcessCore32 Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.BrowserSubprocess.Core.dll" />
+    <FluxonautBrowserProcessCore64 Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x64\Fluxonaut.BrowserSubprocess.Core.dll" />
+  </ItemGroup>
+  
+  <Choose>
+    <When Condition="'$(Platform)' == 'x64'">
+      <ItemGroup>
+        <Reference Include="Fluxonaut.Browser">
+          <HintPath>$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x64\Fluxonaut.Browser.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Fluxonaut.Browser.Core">
+          <HintPath>$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x64\Fluxonaut.Browser.Core.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <!-- x86, Win32 and AnyCPU -->
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Fluxonaut.Browser">
+          <HintPath>$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Fluxonaut.Browser.Core">
+          <HintPath>$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.Core.dll</HintPath>
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+</Project>

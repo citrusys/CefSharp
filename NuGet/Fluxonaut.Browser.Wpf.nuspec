@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Fluxonaut.Browser.Wpf</id>
+    <version>$version$</version>
+    <authors>The Fluxonaut Authors</authors>
+    <owners>The Fluxonaut Authors</owners>
+    <projectUrl>https://github.com/citrusys/root</projectUrl>
+    <repository type="git" url="https://github.com/citrusys/root"/>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The Fluxonaut Chromium-based browser component (WPF control).</description>
+    <tags>wpf chrome browser</tags>
+    <copyright>Copyright © The Fluxonaut Authors</copyright>
+    <dependencies>
+      <group targetFramework=".NETFramework4.5.2">
+        <dependency id="Fluxonaut.Browser.Common" version="[$version$]" />
+      </group>
+      <group targetFramework=".NETCoreApp3.0">
+        <dependency id="Fluxonaut.Browser.Common" version="[$version$]" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\Fluxonaut.Browser.Wpf\bin\x86\Release\Fluxonaut.Browser.Wpf.dll" target="Fluxonaut.Browser\x86" />
+    <file src="..\Fluxonaut.Browser.Wpf\bin\x86\Release\Fluxonaut.Browser.Wpf.xml" target="Fluxonaut.Browser\x86" />
+    <file src="..\Fluxonaut.Browser.Wpf\bin\x86\Release\Fluxonaut.Browser.Wpf.pdb" target="Fluxonaut.Browser\x86" />
+
+    <file src="..\Fluxonaut.Browser.Wpf\bin\x64\Release\Fluxonaut.Browser.Wpf.xml" target="Fluxonaut.Browser\x64" />
+    <file src="..\Fluxonaut.Browser.Wpf\bin\x64\Release\Fluxonaut.Browser.Wpf.dll" target="Fluxonaut.Browser\x64" />
+    <file src="..\Fluxonaut.Browser.Wpf\bin\x64\Release\Fluxonaut.Browser.Wpf.pdb" target="Fluxonaut.Browser\x64" />
+
+    <file src="Fluxonaut.Browser.Wpf.props" target="build" />
+    <file src="Fluxonaut.Browser.Wpf.targets" target="build" />
+
+    <file src="..\Fluxonaut.Browser.Wpf\**\*.cs" target="src\Fluxonaut.Browser.Wpf" />
+  </files>
+</package>

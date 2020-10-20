@@ -1,0 +1,18 @@
+// Copyright © 2014 The Fluxonaut Authors. All rights reserved.
+//
+// Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
+
+using System;
+
+
+namespace Fluxonaut.Browser
+{
+    /// <summary>
+    /// JavascriptIgnoreAttribute - Methods and Properties marked with this attribute
+    /// will be excluded from Javascript Binding
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Property, Inherited = true)]
+    public class JavascriptIgnoreAttribute : Attribute
+    {
+    }
+}

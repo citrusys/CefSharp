@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Target Name="AfterBuild">
+        <ItemGroup>
+            <!-- We only need the .exe and .pdb but I don't know how to express that easily with MSBuild... -->
+            <SubProcessFiles Include="$(SolutionDir)\Fluxonaut.Browser.BrowserSubprocess\bin\$(Platform)\$(Configuration)\Fluxonaut.Browser.BrowserSubprocess.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(SubProcessFiles)" DestinationFolder="$(TargetDir)" />
+    </Target>
+  
+  <Target Name="FluxonautBrowserCopyLibs86" BeforeTargets="AfterBuild" Condition="'$(Platform)' == 'x86'">
+    <Message Importance="high" Text="Copying cef.redist x86 files" />
+    <Copy SourceFiles="@(FluxonautRedist32)" DestinationFiles="@(FluxonautRedist32->'$(TargetDir)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
+  
+  <Target Name="FluxonautBrowserCopyLibs64" BeforeTargets="AfterBuild" Condition="'$(Platform)' == 'x64'">
+    <Message Importance="high" Text="Copying cef.redist x64 files" />
+    <Copy SourceFiles="@(FluxonautRedist64)" DestinationFiles="@(FluxonautRedist64->'$(TargetDir)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>  
+</Project>
