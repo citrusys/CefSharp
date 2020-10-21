@@ -213,11 +213,4 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\Fluxonaut.Browser.props" />
   <Import Project="$(SolutionDir)\Fluxonaut.Browser.Native.props" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\fluxonaut.redist.x64.2.3.0\build\fluxonaut.redist.x64.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\fluxonaut.redist.x64.2.3.0\build\fluxonaut.redist.x64.props'))" />
-    <Error Condition="!Exists('..\packages\fluxonaut.redist.x86.2.3.0\build\fluxonaut.redist.x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\fluxonaut.redist.x86.2.3.0\build\fluxonaut.redist.x86.props'))" />
-  </Target>
 </Project>

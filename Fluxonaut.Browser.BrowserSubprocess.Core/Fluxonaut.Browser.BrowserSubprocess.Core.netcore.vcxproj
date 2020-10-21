@@ -23,12 +23,12 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{6C4BB501-2F8E-48AC-9AB5-8CFB2D74185C}</ProjectGuid>
     <AssemblyName>Fluxonaut.Browser.BrowserSubprocess.Core</AssemblyName>
-    <RootNamespace>Fluxonaut.BrowserBrowserSubprocessCore</RootNamespace>
+    <RootNamespace>Fluxonaut.Browser.BrowserSubprocess.Core</RootNamespace>
     <Keyword>NetCoreCProj</Keyword>
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="$(SolutionDir)\Fluxonaut.Browser.props" />
+  <Import Project="..\Fluxonaut.Browser.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -74,31 +74,31 @@
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <OutDir>bin.netcore\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj.netcore\$(Platform)\$(Configuration)\</IntDir>
-    <SourcePath>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF;$(SourcePath)</SourcePath>
+    <SourcePath>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <OutDir>bin.netcore\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj.netcore\$(Platform)\$(Configuration)\</IntDir>
-    <SourcePath>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF;$(SourcePath)</SourcePath>
+    <SourcePath>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin.netcore\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj.netcore\$(Platform)\$(Configuration)\</IntDir>
-    <SourcePath>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF;$(SourcePath)</SourcePath>
+    <SourcePath>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin.netcore\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj.netcore\$(Platform)\$(Configuration)\</IntDir>
-    <SourcePath>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF;$(SourcePath)</SourcePath>
+    <SourcePath>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;EXPORT;NETCOREAPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -108,7 +108,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcef.lib;libcef_dll_wrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF\$(Platform)\$(Configuration);$(SolutionDir)packages\$(FluxonautSdkVer)\CEF\$(Platform)\$(Configuration)\VS$(VisualStudioProductVersion);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF\$(Platform)\$(Configuration);$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF\$(Platform)\$(Configuration)\VS$(VisualStudioProductVersion);</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Manifest>
@@ -118,7 +118,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;EXPORT;NETCOREAPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -127,7 +127,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcef.lib;libcef_dll_wrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF\$(Platform)\$(Configuration);$(SolutionDir)packages\$(FluxonautSdkVer)\CEF\$(Platform)\$(Configuration)\VS$(VisualStudioProductVersion);</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF\$(Platform)\$(Configuration);$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF\$(Platform)\$(Configuration)\VS$(VisualStudioProductVersion);</AdditionalLibraryDirectories>
       <AdditionalOptions>/ignore:4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Manifest>
@@ -137,7 +137,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;EXPORT;NETCOREAPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <BrowseInformation>true</BrowseInformation>
@@ -146,7 +146,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcef.lib;libcef_dll_wrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF\$(Platform)\$(Configuration);$(SolutionDir)packages\$(FluxonautSdkVer)\CEF\$(Platform)\$(Configuration)\VS$(VisualStudioProductVersion)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF\$(Platform)\$(Configuration);$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF\$(Platform)\$(Configuration)\VS$(VisualStudioProductVersion)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>Assembly.manifest</AdditionalManifestFiles>
@@ -155,7 +155,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;%(AdditionalIncludeDirectories);$(ProjectDir)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;EXPORT;NETCOREAPP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -163,7 +163,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>libcef.lib;libcef_dll_wrapper.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)packages\$(FluxonautSdkVer)\CEF\$(Platform)\$(Configuration);$(SolutionDir)packages\$(FluxonautSdkVer)\CEF\$(Platform)\$(Configuration)\VS$(VisualStudioProductVersion)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF\$(Platform)\$(Configuration);$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF\$(Platform)\$(Configuration)\VS$(VisualStudioProductVersion)</AdditionalLibraryDirectories>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>Assembly.manifest</AdditionalManifestFiles>

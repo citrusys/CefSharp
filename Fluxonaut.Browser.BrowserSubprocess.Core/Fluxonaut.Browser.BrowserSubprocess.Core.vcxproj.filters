@@ -198,6 +198,6 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.Fluxonaut.Browser.BrowserSubprocess.Core.config" />
   </ItemGroup>
 </Project>

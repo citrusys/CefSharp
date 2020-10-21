@@ -1,11 +1,11 @@
 (async () =>
 {
-    await Fluxonaut.Browser.BindObjectAsync("bound");
+    await FluxonautBrowser.BindObjectAsync("bound");
 
     QUnit.test("BindObjectAsync Second call with Bound param", function (assert)
     {
         let asyncCallback = assert.async();
-        Fluxonaut.Browser.BindObjectAsync("bound").then(function (res)
+        FluxonautBrowser.BindObjectAsync("bound").then(function (res)
         {
             assert.equal(res.Success, false, "Second call to BindObjectAsync with already bound objects as params returned false.");
             asyncCallback();

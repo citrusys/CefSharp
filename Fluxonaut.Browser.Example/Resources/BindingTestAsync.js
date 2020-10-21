@@ -23,12 +23,12 @@
         }
     }
 
-    await Fluxonaut.Browser.BindObjectAsync("boundAsync");
+    await FluxonautBrowser.BindObjectAsync("boundAsync");
 
     QUnit.test("BindObjectAsync Second call with boundAsync param", function (assert)
     {
         let asyncCallback = assert.async();
-        Fluxonaut.Browser.BindObjectAsync("boundAsync").then(function (res)
+        FluxonautBrowser.BindObjectAsync("boundAsync").then(function (res)
         {
             assert.equal(res.Success, false, "Second call to BindObjectAsync with already bound objects as params returned false.");
             asyncCallback();
@@ -109,9 +109,9 @@
     {
         var asyncCallback = assert.async();
 
-        boundAsync.hello('Fluxonaut.Browser').then(function (res)
+        boundAsync.hello('FluxonautBrowser').then(function (res)
         {
-            assert.equal(res, "Hello Fluxonaut.Browser")
+            assert.equal(res, "Hello FluxonautBrowser")
 
             asyncCallback();
         });
@@ -133,9 +133,9 @@
     {
         var asyncCallback = assert.async();
 
-        boundAsync.returnObject('Fluxonaut.Browser Struct Test').then(function (res)
+        boundAsync.returnObject('FluxonautBrowser Struct Test').then(function (res)
         {
-            assert.equal(res.Value, "Fluxonaut.Browser Struct Test", "Struct with a single field");
+            assert.equal(res.Value, "FluxonautBrowser Struct Test", "Struct with a single field");
 
             asyncCallback();
         });
@@ -146,9 +146,9 @@
         var asyncCallback = assert.async();
 
         //Returns a class
-        boundAsync.returnClass('Fluxonaut.Browser Class Test').then(function (res)
+        boundAsync.returnClass('FluxonautBrowser Class Test').then(function (res)
         {
-            const expectedResult = 'Fluxonaut.Browser Class Test';
+            const expectedResult = 'FluxonautBrowser Class Test';
 
             assert.equal(expectedResult, res.Value, "Class with a single property");
 
@@ -160,7 +160,7 @@
     {
         var asyncCallback = assert.async();
 
-        const expectedResult = 'Fluxonaut.Browser Class Test';
+        const expectedResult = 'FluxonautBrowser Class Test';
 
         //Returns a class
         boundAsync.returnClassAsJsonString(expectedResult).then(function (res)
@@ -175,10 +175,10 @@
     {
         var asyncCallback = assert.async();
 
-        boundAsync.returnStructArray('Fluxonaut.Browser').then(function (res)
+        boundAsync.returnStructArray('FluxonautBrowser').then(function (res)
         {
-            assert.equal(res[0].Value, "Fluxonaut.BrowserItem1", "Expected Result of Fluxonaut.BrowserItem1");
-            assert.equal(res[1].Value, "Fluxonaut.BrowserItem2", "Expected Result of Fluxonaut.BrowserItem2");
+            assert.equal(res[0].Value, "FluxonautBrowserItem1", "Expected Result of FluxonautBrowserItem1");
+            assert.equal(res[1].Value, "FluxonautBrowserItem2", "Expected Result of FluxonautBrowserItem2");
 
             asyncCallback();
         });
@@ -188,10 +188,10 @@
     {
         var asyncCallback = assert.async();
 
-        boundAsync.returnClassesArray('Fluxonaut.Browser').then(function (res)
+        boundAsync.returnClassesArray('FluxonautBrowser').then(function (res)
         {
-            assert.equal(res[0].Value, "Fluxonaut.BrowserItem1", "Expected Result of Fluxonaut.BrowserItem1");
-            assert.equal(res[1].Value, "Fluxonaut.BrowserItem2", "Expected Result of Fluxonaut.BrowserItem2");
+            assert.equal(res[0].Value, "FluxonautBrowserItem1", "Expected Result of FluxonautBrowserItem1");
+            assert.equal(res[1].Value, "FluxonautBrowserItem2", "Expected Result of FluxonautBrowserItem2");
 
             asyncCallback();
         });
@@ -330,13 +330,13 @@
         var asyncCallback = assert.async();
 
         //Can use both fluxonautBrowser.bindObjectAsync and FluxonautBrowser.BindObjectAsync, both do the same
-        Fluxonaut.Browser.bindObjectAsync({ NotifyIfAlreadyBound: true }, "boundAsync2").then(function (result)
+        fluxonautBrowser.bindObjectAsync({ NotifyIfAlreadyBound: true }, "boundAsync2").then(function (result)
         {
-            boundAsync2.hello('Fluxonaut.Browser').then(function (res)
+            boundAsync2.hello('FluxonautBrowser').then(function (res)
             {
-                assert.equal(res, "Hello Fluxonaut.Browser")
+                assert.equal(res, "Hello FluxonautBrowser")
 
-                assert.equal(true, Fluxonaut.Browser.DeleteBoundObject("boundAsync2"), "Object was unbound");
+                assert.equal(true, FluxonautBrowser.DeleteBoundObject("boundAsync2"), "Object was unbound");
 
                 assert.ok(window.boundAsync2 === undefined, "boundAsync2 is now undefined");
 
@@ -350,11 +350,11 @@
     {
         var asyncCallback = assert.async();
 
-        Fluxonaut.Browser.BindObjectAsync({ NotifyIfAlreadyBound: true, IgnoreCache: true }, "boundAsync2").then(function (result)
+        FluxonautBrowser.BindObjectAsync({ NotifyIfAlreadyBound: true, IgnoreCache: true }, "boundAsync2").then(function (result)
         {
-            boundAsync2.hello('Fluxonaut.Browser').then(function (res)
+            boundAsync2.hello('FluxonautBrowser').then(function (res)
             {
-                assert.equal(res, "Hello Fluxonaut.Browser")
+                assert.equal(res, "Hello FluxonautBrowser")
 
                 asyncCallback();
             });
@@ -366,13 +366,13 @@
     {
         var asyncCallback = assert.async();
 
-        Fluxonaut.Browser.BindObjectAsync({ NotifyIfAlreadyBound: true, IgnoreCache: true }, "boundAsync2").then(function (result)
+        FluxonautBrowser.BindObjectAsync({ NotifyIfAlreadyBound: true, IgnoreCache: true }, "boundAsync2").then(function (result)
         {
-            boundAsync2.hello('Fluxonaut.Browser').then(function (res)
+            boundAsync2.hello('FluxonautBrowser').then(function (res)
             {
-                assert.equal(res, "Hello Fluxonaut.Browser")
+                assert.equal(res, "Hello FluxonautBrowser")
 
-                assert.equal(true, Fluxonaut.Browser.DeleteBoundObject("boundAsync2"), "Object was unbound");
+                assert.equal(true, FluxonautBrowser.DeleteBoundObject("boundAsync2"), "Object was unbound");
 
                 assert.ok(window.boundAsync2 === undefined, "boundAsync2 is now undefined");
 

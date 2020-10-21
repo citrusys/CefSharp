@@ -22,13 +22,11 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{6C4BB501-2F8E-48AC-9AB5-8CFB2D74185C}</ProjectGuid>
     <Keyword>ManagedCProj</Keyword>
-    <RootNamespace>FluxonautBrowserBrowserSubprocessCore</RootNamespace>
+    <RootNamespace>Fluxonaut.Browser.BrowserSubprocess.Core</RootNamespace>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
-    <ProjectName>Fluxonaut.Browser.BrowserSubprocess.Core</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <Import Project="$(SolutionDir)\Fluxonaut.Browser.props" />
+  <Import Project="..\Fluxonaut.Browser.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -75,7 +73,6 @@
     <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
     <SourcePath>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;$(SourcePath)</SourcePath>
-    <TargetName>Fluxonaut.Browser.BrowserSubProcess.Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -83,21 +80,18 @@
     <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
     <SourcePath>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;$(SourcePath)</SourcePath>
-    <TargetName>Fluxonaut.Browser.BrowserSubProcess.Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
     <SourcePath>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;$(SourcePath)</SourcePath>
-    <TargetName>Fluxonaut.Browser.BrowserSubProcess.Core</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>obj\$(Platform)\$(Configuration)\</IntDir>
     <SourcePath>$(SolutionDir)packages\$(FluxonautBrowserSdkVer)\CEF;$(SourcePath)</SourcePath>
-    <TargetName>Fluxonaut.Browser.BrowserSubProcess.Core</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -246,14 +240,8 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.Fluxonaut.Browser.BrowserSubprocess.Core.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\fluxonaut.browser.sdk.2.3.0\build\fluxonaut.browser.sdk.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\fluxonaut.browser.sdk.2.3.0\build\fluxonaut.browser.sdk.props'))" />
-  </Target>
 </Project>

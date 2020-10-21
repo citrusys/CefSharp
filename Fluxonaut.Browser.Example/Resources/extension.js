@@ -1,15 +1,13 @@
-﻿var Fluxonaut;
-if (!Fluxonaut)
-    Fluxonaut = {
-        Browser = {},
-    };
+﻿var FluxonautBrowser;
+if (!FluxonautBrowser)
+    FluxonautBrowser = {};
 
-if (!Fluxonaut.Browser.example)
-    Fluxonaut.Browser.example = {};
+if (!FluxonautBrowser.example)
+    FluxonautBrowser.example = {};
 
 (function ()
 {
-    Fluxonaut.Browser.example.alert = function(text)
+    FluxonautBrowser.example.alert = function(text)
     {
         alert(text);
     };

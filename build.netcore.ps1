@@ -14,7 +14,7 @@ $nuget = Join-Path $WorkingDir .\nuget\NuGet.exe
 
 # Extract the current CEF Redist version from the Fluxonaut.Browser.Core\packages.config file
 # Save having to update this file manually Example 3.2704.1418
-$FluxonautBrowserCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'Fluxonaut.Browser.Core\Packages.config'))
+$FluxonautBrowserCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'Fluxonaut.Browser.Core\packages.Fluxonaut.Browser.Core.netcore.config'))
 $RedistVersion = $FluxonautBrowserCorePackagesXml.SelectSingleNode("//packages/package[@id='fluxonaut.browser.sdk']/@version").value
 
 function Write-Diagnostic 
@@ -170,7 +170,7 @@ function Compile
 
     # Restore packages
     . $nuget restore Fluxonaut.Browser.Core\packages.config -PackagesDirectory packages
-    . $nuget restore Fluxonaut.Browser.BrowserSubprocess.Core\packages.config  -PackagesDirectory packages
+    . $nuget restore Fluxonaut.Browser.BrowserSubprocess.Core\packages.Fluxonaut.Browser.BrowserSubprocess.Core.netcore.config  -PackagesDirectory packages
     &msbuild /t:restore Fluxonaut.Browser.netcore.sln
     
     Write-Diagnostic "Compile Packages"

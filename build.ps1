@@ -13,7 +13,7 @@ $FluxonautBrowserSln = Join-Path $WorkingDir 'Fluxonaut.Browser.sln'
 
 # Extract the current CEF Redist version from the Fluxonaut.Browser.Core\packages.config file
 # Save having to update this file manually Example 3.2704.1418
-$FluxonautBrowserCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'Fluxonaut.Browser.Core\Packages.config'))
+$FluxonautBrowserCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'Fluxonaut.Browser.Core\packages.Fluxonaut.Browser.Core.config'))
 $RedistVersion = $FluxonautBrowserCorePackagesXml.SelectSingleNode("//packages/package[@id='fluxonaut.browser.sdk']/@version").value
 
 function Write-Diagnostic 

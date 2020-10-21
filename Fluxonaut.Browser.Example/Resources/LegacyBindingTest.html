@@ -183,9 +183,9 @@
             {
                 var asyncCallback = assert.async();
                 
-                boundAsync.hello('Fluxonaut.Browser').then(function (res)
+                boundAsync.hello('FluxonautBrowser').then(function (res)
                 {
-                    assert.equal(res, "Hello Fluxonaut.Browser")
+                    assert.equal(res, "Hello FluxonautBrowser")
 
                     asyncCallback();
                 });
@@ -207,9 +207,9 @@
             {
                 var asyncCallback = assert.async();
                 
-                boundAsync.returnObject('Fluxonaut.Browser').then(function (res)
+                boundAsync.returnObject('FluxonautBrowser').then(function (res)
                 {
-                    assert.equal(res.Value, "Fluxonaut.Browser", "JSON Object with a single field");
+                    assert.equal(res.Value, "FluxonautBrowser", "JSON Object with a single field");
 
                     asyncCallback();
                 });
@@ -218,10 +218,10 @@
             QUnit.test("Async call (returnStructArray):", function( assert )
             {
                 var asyncCallback = assert.async();
-                boundAsync.returnStructArray('Fluxonaut.Browser').then(function (res)
+                boundAsync.returnStructArray('FluxonautBrowser').then(function (res)
                 {
-                    assert.equal(res[0].Value, "Fluxonaut.BrowserItem1", "Expected Result of Fluxonaut.BrowserItem1");
-                    assert.equal(res[1].Value, "Fluxonaut.BrowserItem2", "Expected Result of Fluxonaut.BrowserItem2");
+                    assert.equal(res[0].Value, "FluxonautBrowserItem1", "Expected Result of FluxonautBrowserItem1");
+                    assert.equal(res[1].Value, "FluxonautBrowserItem2", "Expected Result of FluxonautBrowserItem2");
                     asyncCallback();
                 });
             });
@@ -229,10 +229,10 @@
             QUnit.test("Async call (returnClassesArray):", function( assert )
             {
                 var asyncCallback = assert.async();
-                boundAsync.returnClassesArray('Fluxonaut.Browser').then(function (res)
+                boundAsync.returnClassesArray('FluxonautBrowser').then(function (res)
                 {
-                    assert.equal(res[0].Value, "Fluxonaut.BrowserItem1", "Expected Result of Fluxonaut.BrowserItem1");
-                    assert.equal(res[1].Value, "Fluxonaut.BrowserItem2", "Expected Result of Fluxonaut.BrowserItem2");
+                    assert.equal(res[0].Value, "FluxonautBrowserItem1", "Expected Result of FluxonautBrowserItem1");
+                    assert.equal(res[1].Value, "FluxonautBrowserItem2", "Expected Result of FluxonautBrowserItem2");
                     asyncCallback();
                 });
             });
@@ -275,7 +275,7 @@
 			
 			QUnit.done(function (details)
 			{
-				Fluxonaut.Browser.PostMessage({ "Type": "QUnitExecutionComplete", "Details": details });
+				FluxonautBrowser.PostMessage({ "Type": "QUnitExecutionComplete", "Details": details });
 			});
         })();
         </script>
