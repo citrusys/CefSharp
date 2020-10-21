@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="4.0.0">
+    <id>Fluxonaut.Browser.Wpf.NETCore</id>
+    <version>$version$</version>
+    <authors>The Fluxonaut Authors</authors>
+    <owners>The Fluxonaut Authors</owners>
+    <projectUrl>https://github.com/citrusys/root</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>The Fluxonaut Chromium-based browser component (WPF control).</description>
+    <tags>wpf chrome browser chromium-embedded fluxonaut browser</tags>
+    <copyright>Copyright © The Fluxonaut Authors</copyright>
+    <dependencies>
+      <group targetFramework=".NETCoreApp3.1">
+        <dependency id="Fluxonaut.Browser.Common.NETCore" version="[$version$]" include="Runtime,Compile,Build,Native,ContentFiles" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <!-- pdb and xml files not copied see https://github.com/dotnet/sdk/issues/1458 -->
+	<file src="..\..\Fluxonaut.Browser.Wpf\bin.netcore\Release\netcoreapp3.1\ref\Fluxonaut.Browser.Wpf.dll" target="ref\netcoreapp3.1"/>
+    <file src="..\..\Fluxonaut.Browser.Wpf\bin.netcore\Release\netcoreapp3.1\Fluxonaut.Browser.Wpf.dll" target="lib\netcoreapp3.1"/>
+  </files>
+</package>

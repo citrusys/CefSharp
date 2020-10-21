@@ -11,6 +11,7 @@
 #include "include\cef_request_context.h"
 
 #include "RequestContextSettings.h"
+#include "RequestContextBuilder.h"
 #include "Internals\CefRequestContextHandlerAdapter.h"
 #include "Internals\CefWrapper.h"
 
@@ -114,7 +115,7 @@ namespace Fluxonaut
             /// </summary>
             /// <param name="other">shares storage with this RequestContext</param>
             /// <param name="requestContextHandler">optional requestContext handler</param>
-            /// <returns>Returns a nre RequestContext</returns>
+            /// <returns>Returns a new RequestContext</returns>
             static IRequestContext^ CreateContext(IRequestContext^ other, IRequestContextHandler^ requestContextHandler)
             {
                 auto otherRequestContext = static_cast<RequestContext^>(other);
@@ -122,6 +123,18 @@ namespace Fluxonaut
 
                 auto newContext = CefRequestContext::CreateContext(otherRequestContext, handler);
                 return gcnew RequestContext(newContext);
+            }
+
+            /// <summary>
+            /// Creates a new RequestContextBuilder which can be used to fluently set
+            /// preferences
+            /// </summary>
+            /// <returns>Returns a new RequestContextBuilder</returns>
+            static RequestContextBuilder^ Configure()
+            {
+                auto builder = gcnew RequestContextBuilder();
+
+                return builder;
             }
 
             /// <summary>
@@ -213,7 +226,7 @@ namespace Fluxonaut
             /// <param name="name">name of preference</param>
             /// <returns>bool if the preference exists</returns>
             /// <remarks>Use Cef.UIThreadTaskFactory to execute this method if required,
-            /// <see cref="IBrowserProcessHandler.OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
+            /// <see cref="IBrowserProcessHandler::OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
             /// executed on the CEF UI thread, so can be called directly.
             /// When CefSettings.MultiThreadedMessageLoop == false (the default is true) then the main
             /// application thread will be the CEF UI thread.</remarks>
@@ -229,7 +242,7 @@ namespace Fluxonaut
             /// <param name="name">preference name</param>
             /// <returns>Returns the value for the preference with the specified name</returns>
             /// <remarks>Use Cef.UIThreadTaskFactory to execute this method if required,
-            /// <see cref="IBrowserProcessHandler.OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
+            /// <see cref="IBrowserProcessHandler::OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
             /// executed on the CEF UI thread, so can be called directly.
             /// When CefSettings.MultiThreadedMessageLoop == false (the default is true) then the main
             /// application thread will be the CEF UI thread.</remarks>
@@ -274,7 +287,7 @@ namespace Fluxonaut
             /// <param name="error">out error</param>
             /// <returns>Returns true if the value is set successfully and false otherwise.</returns>
             /// <remarks>Use Cef.UIThreadTaskFactory to execute this method if required,
-            /// <see cref="IBrowserProcessHandler.OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
+            /// <see cref="IBrowserProcessHandler::OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
             /// executed on the CEF UI thread, so can be called directly.
             /// When CefSettings.MultiThreadedMessageLoop == false (the default is true) then the main
             /// application thread will be the CEF UI thread.</remarks>
@@ -282,8 +295,8 @@ namespace Fluxonaut
 
             /// <summary>
             /// Clears all certificate exceptions that were added as part of handling
-            /// <see cref="IRequestHandler.OnCertificateError"/>. If you call this it is
-            /// recommended that you also call <see cref="IRequestContext.CloseAllConnections"/> or you risk not
+            /// <see cref="IRequestHandler::OnCertificateError"/>. If you call this it is
+            /// recommended that you also call <see cref="IRequestContext::CloseAllConnections"/> or you risk not
             /// being prompted again for server certificates if you reconnect quickly.
             /// </summary>
             /// <param name="callback">If is non-NULL it will be executed on the CEF UI thread after
@@ -292,7 +305,7 @@ namespace Fluxonaut
 
             /// <summary>
             /// Clears all HTTP authentication credentials that were added as part of handling
-            /// <see cref="IRequestHandler.GetAuthCredentials"/>.
+            /// <see cref="IRequestHandler::GetAuthCredentials"/>.
             /// </summary>
             /// <param name="callback">If is non-NULL it will be executed on the CEF UI thread after
             /// completion. This param is optional</param>
@@ -320,7 +333,7 @@ namespace Fluxonaut
             /// </summary>
             /// <returns>Returns true if this context was used to load the extension identified by extensionId</returns>
             /// <remarks>Use Cef.UIThreadTaskFactory to execute this method if required,
-            /// <see cref="IBrowserProcessHandler.OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
+            /// <see cref="IBrowserProcessHandler::OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
             /// executed on the CEF UI thread, so can be called directly.
             /// When CefSettings.MultiThreadedMessageLoop == false (the default is true) then the main
             /// application thread will be the CEF UI thread.</remarks>
@@ -333,7 +346,7 @@ namespace Fluxonaut
             /// <param name="extensionId">extension Id</param>
             /// <returns>Returns the extension matching extensionId or null if no matching extension is accessible in this context</returns>
             /// <remarks>Use Cef.UIThreadTaskFactory to execute this method if required,
-            /// <see cref="IBrowserProcessHandler.OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
+            /// <see cref="IBrowserProcessHandler::OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
             /// executed on the CEF UI thread, so can be called directly.
             /// When CefSettings.MultiThreadedMessageLoop == false (the default is true) then the main
             /// application thread will be the CEF UI thread.</remarks>
@@ -347,7 +360,7 @@ namespace Fluxonaut
             /// <param name="extensionIds">output a list of extensions Ids</param>
             /// <returns>returns true on success otherwise false</returns>
             /// <remarks>Use Cef.UIThreadTaskFactory to execute this method if required,
-            /// <see cref="IBrowserProcessHandler.OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
+            /// <see cref="IBrowserProcessHandler::OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
             /// executed on the CEF UI thread, so can be called directly.
             /// When CefSettings.MultiThreadedMessageLoop == false (the default is true) then the main
             /// application thread will be the CEF UI thread.</remarks>
@@ -361,7 +374,7 @@ namespace Fluxonaut
             /// <param name="extensionId">extension id</param>
             /// <returns>Returns true if this context has access to the extension identified by extensionId</returns>
             /// <remarks>Use Cef.UIThreadTaskFactory to execute this method if required,
-            /// <see cref="IBrowserProcessHandler.OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
+            /// <see cref="IBrowserProcessHandler::OnContextInitialized"/> and ChromiumWebBrowser.IsBrowserInitializedChanged are both
             /// executed on the CEF UI thread, so can be called directly.
             /// When CefSettings.MultiThreadedMessageLoop == false (the default is true) then the main
             /// application thread will be the CEF UI thread.</remarks>
@@ -375,9 +388,9 @@ namespace Fluxonaut
             /// and manifestJson should contain the contents that would otherwise be read from the "manifest.json" file on disk.
             /// The loaded extension will be accessible in all contexts sharing the same storage (HasExtension returns true).
             /// However, only the context on which this method was called is considered the loader (DidLoadExtension returns true) and only the
-            /// loader will receive IRequestContextHandler callbacks for the extension. <see cref="IExtensionHandler.OnExtensionLoaded"/> will be
-            /// called on load success or <see cref="IExtensionHandler.OnExtensionLoadFailed"/> will be called on load failure.
-            /// If the extension specifies a background script via the "background" manifest key then <see cref="IExtensionHandler.OnBeforeBackgroundBrowser"/>
+            /// loader will receive IRequestContextHandler callbacks for the extension. <see cref="IExtensionHandler::OnExtensionLoaded"/> will be
+            /// called on load success or <see cref="IExtensionHandler::OnExtensionLoadFailed"/> will be called on load failure.
+            /// If the extension specifies a background script via the "background" manifest key then <see cref="IExtensionHandler::OnBeforeBackgroundBrowser"/>
             /// will be called to create the background browser. See that method for additional information about background scripts.
             /// For visible extension views the client application should evaluate the manifest to determine the correct extension URL to load and then pass
             /// that URL to the IBrowserHost.CreateBrowser* function after the extension has loaded. For example, the client can look for the "browser_action"
@@ -386,7 +399,7 @@ namespace Fluxonaut
             /// Visit chrome://extensions-support for the list of extension APIs currently supported by CEF. - Main frame navigation to non-extension
             /// content is blocked.
             /// - Pinch-zooming is disabled.
-            /// - <see cref="IBrowserHost.GetExtension"/> returns the hosted extension.
+            /// - <see cref="IBrowserHost::GetExtension"/> returns the hosted extension.
             /// - CefBrowserHost::IsBackgroundHost returns true for background hosts. See https://developer.chrome.com/extensions for extension implementation and usage documentation.
             /// </summary>
             /// <param name="rootDirectory">If extension resources will be read from disk using the default load implementation then rootDirectoy
@@ -397,5 +410,5 @@ namespace Fluxonaut
             virtual void LoadExtension(String^ rootDirectory, String^ manifestJson, IExtensionHandler^ handler);
         };
     }
-    #endif  // CEFSHARP_CORE_REQUESTCONTEXT_H_
 }
+#endif  // CEFSHARP_CORE_REQUESTCONTEXT_H_

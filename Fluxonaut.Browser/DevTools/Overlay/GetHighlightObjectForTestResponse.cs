@@ -1,0 +1,30 @@
+// Copyright © 2020 The Fluxonaut Authors. All rights reserved.
+//
+// Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
+namespace Fluxonaut.Browser.DevTools.Overlay
+{
+    /// <summary>
+    /// GetHighlightObjectForTestResponse
+    /// </summary>
+    [System.Runtime.Serialization.DataContractAttribute]
+    public class GetHighlightObjectForTestResponse : Fluxonaut.Browser.DevTools.DevToolsDomainResponseBase
+    {
+        [System.Runtime.Serialization.DataMemberAttribute]
+        internal object highlight
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// highlight
+        /// </summary>
+        public object Highlight
+        {
+            get
+            {
+                return highlight;
+            }
+        }
+    }
+}

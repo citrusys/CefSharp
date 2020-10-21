@@ -76,10 +76,10 @@
   <ItemGroup>
     <Compile Include="Callback\RunFileDialogCallback.cs" />
     <Compile Include="DevTools\DevToolsExtensions.cs" />
-    <Compile Include="DevTools\TaskMethodDevToolsMessageObserver.cs" />
     <Compile Include="Handlers\AudioHandler.cs" />
     <Compile Include="Handlers\ExampleResourceRequestHandler.cs" />
     <Compile Include="Handlers\ExtensionHandler.cs" />
+    <Compile Include="Handlers\RequestContextHandler.cs" />
     <Compile Include="JavascriptBinding\AsyncBoundObject.cs" />
     <Compile Include="JavascriptBinding\BoundObject.cs" />
     <Compile Include="JavascriptBinding\CallbackResponseStruct.cs" />
@@ -156,6 +156,9 @@
     <Content Include="Resources\assets\js\shBrushCSharp.js" />
     <None Include="Resources\assets\js\shBrushJScript.js" />
     <Content Include="Resources\assets\js\shCore.js" />
+    <Content Include="Resources\BindingTestNetCore.html" />
+    <Content Include="Resources\BindingTestAsync.js" />
+    <Content Include="Resources\BindingTestSync.js" />
     <Content Include="Resources\BindingTestsAsyncTask.html" />
     <Content Include="Resources\BindingApiCustomObjectNameTest.html" />
     <Content Include="Resources\BindingTestSingle.html" />
@@ -169,7 +172,6 @@
     <Content Include="Resources\bootstrap\bootstrap-theme.min.css" />
     <Content Include="Resources\bootstrap\bootstrap.min.css" />
     <Content Include="Resources\bootstrap\bootstrap.min.js" />
-    <Content Include="Resources\extension.js" />
     <Content Include="Resources\MultiBindingTest.html" />
     <Content Include="Resources\home.html" />
     <Content Include="Resources\FramedWebGLTest.html" />

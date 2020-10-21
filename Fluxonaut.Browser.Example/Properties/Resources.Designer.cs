@@ -333,6 +333,55 @@ namespace Fluxonaut.Browser.Example.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to (async () =&gt;
+        ///{
+        ///    // Verify that two objects are completely equal
+        ///    function deepEqual(x, y)
+        ///    {
+        ///        if ((typeof x == &quot;object&quot; &amp;&amp; x != null) &amp;&amp; (typeof y == &quot;object&quot; &amp;&amp; y != null))
+        ///        {
+        ///            for (var prop in x)
+        ///            {
+        ///                if (prop in y &amp;&amp; (Object.keys(x).length === Object.keys(y).length))
+        ///                {
+        ///                    return deepEqual(x[prop], y[prop]);
+        ///                }
+        ///                else
+        ///                {
+        ///                    return false;
+        ///  [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string BindingTestAsync {
+            get {
+                return ResourceManager.GetString("BindingTestAsync", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0 Transitional//EN&quot;&gt;
+        ///&lt;html&gt;
+        ///&lt;head&gt;
+        ///    &lt;title&gt;Binding Test (Net Core)&lt;/title&gt;
+        ///    &lt;link rel=&quot;stylesheet&quot; href=&quot;https://code.jquery.com/qunit/qunit-2.4.1.css&quot;&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///    &lt;div id=&quot;qunit&quot;&gt;&lt;/div&gt;
+        ///    &lt;div id=&quot;qunit-fixture&quot;&gt;&lt;/div&gt;
+        ///    &lt;script src=&quot;https://code.jquery.com/qunit/qunit-2.4.1.js&quot;&gt;&lt;/script&gt;
+        ///
+        ///    &lt;!--&lt;script type=&quot;text/javascript&quot;&gt;
+        ///    (async function() {
+        ///        // &lt;embed user provided code here&gt;
+        ///
+        ///        await Fluxonaut.Browser.BindObjectAsyn [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string BindingTestNetCore {
+            get {
+                return ResourceManager.GetString("BindingTestNetCore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0 Transitional//EN&quot;&gt;
         ///&lt;html&gt;
         ///&lt;head&gt;
@@ -379,6 +428,29 @@ namespace Fluxonaut.Browser.Example.Properties {
         public static string BindingTestSingle {
             get {
                 return ResourceManager.GetString("BindingTestSingle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (async () =&gt;
+        ///{
+        ///    await Fluxonaut.Browser.BindObjectAsync(&quot;bound&quot;);
+        ///
+        ///    QUnit.test(&quot;BindObjectAsync Second call with Bound param&quot;, function (assert)
+        ///    {
+        ///        let asyncCallback = assert.async();
+        ///        Fluxonaut.Browser.BindObjectAsync(&quot;bound&quot;).then(function (res)
+        ///        {
+        ///            assert.equal(res.Success, false, &quot;Second call to BindObjectAsync with already bound objects as params returned false.&quot;);
+        ///            asyncCallback();
+        ///        });
+        ///    });
+        ///
+        ///    QUnit.test(&quot;bound.repeat(&apos;hi &apos;, 5)&quot;, function ( [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string BindingTestSync {
+            get {
+                return ResourceManager.GetString("BindingTestSync", resourceCulture);
             }
         }
         
@@ -548,28 +620,6 @@ namespace Fluxonaut.Browser.Example.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to var FluxonautBrowser;
-        ///if (!FluxonautBrowser)
-        ///    FluxonautBrowser = {};
-        ///
-        ///if (!fluxonautbrowser.example)
-        ///    fluxonautbrowser.example = {};
-        ///
-        ///(function ()
-        ///{
-        ///    fluxonautbrowser.example.alert = function(text)
-        ///    {
-        ///        alert(text);
-        ///    };
-        ///})();.
-        /// </summary>
-        public static string extension {
-            get {
-                return ResourceManager.GetString("extension", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to &lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0 Transitional//EN&quot;&gt;
         ///&lt;html&gt;
         ///    &lt;head&gt;
@@ -596,7 +646,7 @@ namespace Fluxonaut.Browser.Example.Properties {
         ///    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
         ///    &lt;meta name=&quot;description&quot; content=&quot;&quot;&gt;
         ///    &lt;meta name=&quot;author&quot; content=&quot;&quot;&gt;
-        ///    &lt;title&gt;Getting started &amp;middot; CefSharp &lt;/title&gt;
+        ///    &lt;title&gt;Getting started &amp;middot; Fluxonaut.Browser &lt;/title&gt;
         ///    &lt;!-- Bootstrap core CSS --&gt;
         ///    &lt;link href=&quot;bootstrap/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
         ///    &lt;!-- Page-specific extras --&gt;
@@ -619,7 +669,7 @@ namespace Fluxonaut.Browser.Example.Properties {
         ///    &lt;script type=&quot;text/javascript&quot;&gt;
         ///        (async function ()
         ///        {
-        ///            await CefSharp.BindObjectAsync(&apos;boundObject&apos;);
+        ///            await Fluxonaut.Browser.BindObjectAsync(&apos;boundObject&apos;);
         ///            boundObject.setCallBack(myFunction);
         ///
         ///            function myFunction(param)
@@ -736,7 +786,7 @@ namespace Fluxonaut.Browser.Example.Properties {
         ///&lt;html lang=&quot;en&quot; xmlns=&quot;http://www.w3.org/1999/xhtml&quot;&gt;
         ///&lt;head&gt;
         ///    &lt;meta charset=&quot;utf-8&quot; /&gt;
-        ///    &lt;title&gt;CefSharp Recaptcha Test&lt;/title&gt;
+        ///    &lt;title&gt;Fluxonaut.Browser Recaptcha Test&lt;/title&gt;
         ///    &lt;script src=&apos;https://www.google.com/recaptcha/api.js&apos;&gt;&lt;/script&gt;
         ///&lt;/head&gt;
         ///&lt;body&gt;

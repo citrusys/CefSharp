@@ -84,7 +84,7 @@ namespace Fluxonaut
                             auto global = context->GetGlobal();
 
                             //Loop through all arguments and ignore anything that's not a string
-                            for (auto i = 0; i < arguments.size(); i++)
+                            for (size_t i = 0; i < arguments.size(); i++)
                             {
                                 //Validate arg as being a string
                                 if (arguments[i]->IsString())
@@ -149,7 +149,11 @@ namespace Fluxonaut
                                     JavascriptRootObjectWrapper^ rootObject;
                                     if (!rootObjectWrappers->TryGetValue(frame->GetIdentifier(), rootObject))
                                     {
+    #ifdef NETCOREAPP
+                                        rootObject = gcnew JavascriptRootObjectWrapper(browser->GetIdentifier());
+    #else
                                         rootObject = gcnew JavascriptRootObjectWrapper(browser->GetIdentifier(), _browserWrapper->BrowserProcess);
+    #endif
                                         rootObjectWrappers->TryAdd(frame->GetIdentifier(), rootObject);
                                     }
 
@@ -318,4 +322,3 @@ namespace Fluxonaut
         };
     }
 }
-

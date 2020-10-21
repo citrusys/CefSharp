@@ -11,6 +11,7 @@ using Fluxonaut.Browser.Internals;
 using Fluxonaut.Browser.Structs;
 using Fluxonaut.Browser.Wpf.Internals;
 using Point = System.Windows.Point;
+using Range = Fluxonaut.Browser.Structs.Range;
 using Rect = Fluxonaut.Browser.Structs.Rect;
 
 namespace Fluxonaut.Browser.Wpf.Experimental

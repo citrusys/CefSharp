@@ -7,7 +7,6 @@
 #include "Stdafx.h"
 
 #include "SubProcess.h"
-#include "WcfEnabledSubProcess.h"
 
 using namespace System;
 using namespace Fluxonaut::Browser::Internals;
@@ -59,7 +58,7 @@ namespace Fluxonaut
                 /// to execute a secondary process e.g. gpu, plugin, renderer, utility
                 /// It can be used to run secondary processes (BrowserSubProcess) from your main applications executable
                 /// or from a separate executable specified by the CefSettings.BrowserSubprocessPath value.
-                /// Fluxonaut.Browser defaults to using the latter approach, a default implementation (Fluxonaut.Browser.BrowserSubProcess.exe) is
+                /// FluxonautBrowser defaults to using the latter approach, a default implementation (Fluxonaut.Browser.BrowserSubProcess.exe) is
                 /// supplied, see https://github.com/cefsharp/CefSharp/wiki/General-Usage#processes for more details.
                 /// </summary>
                 /// <param name="args">command line args</param>
@@ -78,7 +77,7 @@ namespace Fluxonaut
                 /// to execute a secondary process e.g. gpu, plugin, renderer, utility
                 /// It can be used to run secondary processes (BrowserSubProcess) from your main applications executable
                 /// or from a separate executable specified by the CefSettings.BrowserSubprocessPath value.
-                /// Fluxonaut.Browser defaults to using the latter approach, a default implementation (Fluxonaut.Browser.BrowserSubProcess.exe) is
+                /// FluxonautBrowser defaults to using the latter approach, a default implementation (Fluxonaut.Browser.BrowserSubProcess.exe) is
                 /// supplied, see https://github.com/cefsharp/CefSharp/wiki/General-Usage#processes for more details.
                 /// </summary>
                 /// <param name="args">command line args</param>

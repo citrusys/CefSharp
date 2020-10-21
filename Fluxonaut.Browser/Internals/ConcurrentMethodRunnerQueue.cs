@@ -108,6 +108,7 @@ namespace Fluxonaut.Browser.Internals
             object result = null;
             string exception;
             var success = false;
+            var nameConverter = repository.NameConverter;
 
             //make sure we don't throw exceptions in the executor task
             try
@@ -126,7 +127,8 @@ namespace Fluxonaut.Browser.Internals
                 FrameId = methodInvocation.FrameId,
                 Message = exception,
                 Result = result,
-                Success = success
+                Success = success,
+                NameConverter = nameConverter
             };
         }
 

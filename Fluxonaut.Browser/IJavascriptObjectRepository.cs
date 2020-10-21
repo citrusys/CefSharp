@@ -4,7 +4,7 @@
 
 using System;
 using Fluxonaut.Browser.Event;
-using Fluxonaut.Browser.Internals;
+using Fluxonaut.Browser.JavascriptBinding;
 
 
 namespace Fluxonaut.Browser
@@ -20,6 +20,12 @@ namespace Fluxonaut.Browser
         /// </summary>
         JavascriptBindingSettings Settings { get; }
         /// <summary>
+        /// Converted .Net method/property/field names to the name that
+        /// will be used in Javasript. Used for when .Net naming conventions
+        /// differ from Javascript naming conventions.
+        /// </summary>
+        IJavascriptNameConverter NameConverter { get; set; }
+        /// <summary>
         /// Register an object for binding in Javascript. You can either
         /// register an object in advance or as part of the <see cref="ResolveObject"/>
         /// event that will be called if no object matching object is found in the registry.
@@ -31,6 +37,7 @@ namespace Fluxonaut.Browser
         /// </summary>
         /// <param name="name">object name</param>
         /// <param name="objectToBind">the object that will be bound in javascript</param>
+#if !NETCOREAPP
         /// <param name="isAsync">
         /// if true the object will be registered for async communication,
         /// only methods will be exposed and when called from javascript will return a Promise to be awaited. 
@@ -38,9 +45,14 @@ namespace Fluxonaut.Browser
         /// If false then methods and properties will be registered, this method relies on a WCF service to communicate.
         /// If you are targeting .Net Core then you can only use isAsync = true as Microsoft has chosen not to support WCF.
         /// </param>
+#endif
         /// <param name="options">binding options, by default method/property names are camelCased, you can control this
         /// and other advanced options though this class.</param>
+#if NETCOREAPP
+        void Register(string name, object objectToBind, BindingOptions options = null);
+#else
         void Register(string name, object objectToBind, bool isAsync, BindingOptions options = null);
+#endif
         /// <summary>
         /// UnRegister all the currently bound objects from the repository. If you unregister an object that is currently
         /// bound in JavaScript then the method/property calls will fail.

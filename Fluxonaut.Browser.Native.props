@@ -9,12 +9,12 @@
     </Target>
   
   <Target Name="FluxonautBrowserCopyLibs86" BeforeTargets="AfterBuild" Condition="'$(Platform)' == 'x86'">
-    <Message Importance="high" Text="Copying cef.redist x86 files" />
+    <Message Importance="high" Text="Copying fluxonaut.redist x86 files" />
     <Copy SourceFiles="@(FluxonautRedist32)" DestinationFiles="@(FluxonautRedist32->'$(TargetDir)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>
   
   <Target Name="FluxonautBrowserCopyLibs64" BeforeTargets="AfterBuild" Condition="'$(Platform)' == 'x64'">
-    <Message Importance="high" Text="Copying cef.redist x64 files" />
+    <Message Importance="high" Text="Copying fluxonaut.redist x64 files" />
     <Copy SourceFiles="@(FluxonautRedist64)" DestinationFiles="@(FluxonautRedist64->'$(TargetDir)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
   </Target>  
 </Project>

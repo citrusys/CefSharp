@@ -93,7 +93,13 @@ namespace Fluxonaut.Browser.Example.Handlers
                 //In this example we register the FolderSchemeHandlerFactory for https://fluxonaut.example
                 //Best to include the domain name, so only requests for that domain are forwarded to your scheme handler
                 //It is possible to intercept all requests for a scheme, including the built in http/https ones, be very careful doing this!
-                var folderSchemeHandlerExample = new FolderSchemeHandlerFactory(rootFolder: @"..\..\..\..\Fluxonaut.Browser.Example\Resources",
+                const string cefSharpExampleResourcesFolder =
+#if !NETCOREAPP
+                    @"..\..\..\..\Fluxonaut.Browser.Example\Resources";
+#else
+                    @"..\..\..\..\..\Fluxonaut.Browser.Example\Resources";
+#endif
+                var folderSchemeHandlerExample = new FolderSchemeHandlerFactory(rootFolder: cefSharpExampleResourcesFolder,
                                                                         hostName: "fluxonaut.browser.example", //Optional param no hostname checking if null
                                                                         defaultPage: "home.html"); //Optional param will default to index.html
 

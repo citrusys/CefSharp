@@ -26,7 +26,6 @@ namespace Fluxonaut
             gcroot<Action<CefBrowserWrapper^>^> _onBrowserCreated;
             gcroot<Action<CefBrowserWrapper^>^> _onBrowserDestroyed;
             gcroot<ConcurrentDictionary<int, CefBrowserWrapper^>^> _browserWrappers;
-            gcroot<List<V8Extension^>^> _extensions;
             bool _focusedNodeChangedEnabled;
             bool _legacyBindingEnabled;
 
@@ -48,7 +47,6 @@ namespace Fluxonaut
                 _onBrowserCreated = onBrowserCreated;
                 _onBrowserDestroyed = onBrowserDestroyed;
                 _browserWrappers = gcnew ConcurrentDictionary<int, CefBrowserWrapper^>();
-                _extensions = gcnew List<V8Extension^>();
                 _focusedNodeChangedEnabled = enableFocusedNodeChanged;
                 _javascriptObjects = gcnew Dictionary<String^, JavascriptObject^>();
                 _registerBoundObjectRegistry = gcnew RegisterBoundObjectRegistry();
@@ -68,7 +66,6 @@ namespace Fluxonaut
                 }
                 delete _onBrowserCreated;
                 delete _onBrowserDestroyed;
-                delete _extensions;
             }
 
             CefBrowserWrapper^ FindBrowserWrapper(int browserId);
@@ -80,7 +77,6 @@ namespace Fluxonaut
             virtual DECL void OnContextCreated(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context) OVERRIDE;
             virtual DECL void OnContextReleased(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context) OVERRIDE;
             virtual DECL bool OnProcessMessageReceived(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefProcessId sourceProcessId, CefRefPtr<CefProcessMessage> message) OVERRIDE;
-            virtual DECL void OnRenderThreadCreated(CefRefPtr<CefListValue> extraInfo) OVERRIDE;
             virtual DECL void OnWebKitInitialized() OVERRIDE;
             virtual DECL void OnFocusedNodeChanged(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefDOMNode> node) OVERRIDE;
             virtual DECL void OnUncaughtException(CefRefPtr<CefBrowser> browser, CefRefPtr<CefFrame> frame, CefRefPtr<CefV8Context> context, CefRefPtr<CefV8Exception> exception, CefRefPtr<CefV8StackTrace> stackTrace) OVERRIDE;

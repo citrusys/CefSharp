@@ -19,7 +19,7 @@ namespace Fluxonaut
         private:
             const CefPopupFeatures* _popupFeatures;
 
-        public:
+        internal:
             /// <summary>
             /// Constructor.
             /// </summary>
@@ -29,6 +29,7 @@ namespace Fluxonaut
                 _popupFeatures = popupFeatures;
             }
 
+        public:
             !PopupFeatures()
             {
                 _popupFeatures = NULL;

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+    <!-- Note: We cannot use the recommended style of specifying <Project Sdk=...> because we need
+       to set BaseIntermediateOutputPath and BaseOutputPath before the SDK props are imported. -->
+    <PropertyGroup>
+        <BaseIntermediateOutputPath>obj.netcore\</BaseIntermediateOutputPath>
+        <BaseOutputPath>bin.netcore\</BaseOutputPath>
+    </PropertyGroup>
+
+    <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk.WindowsDesktop" />
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>Fluxonaut.Browser.Wpf.Example</RootNamespace>
+        <AssemblyName>Fluxonaut.Browser.Wpf.Example</AssemblyName>
+        <UseWPF>true</UseWPF>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+        <Platforms>x86;x64</Platforms>
+        <StartupObject>Fluxonaut.Browser.Wpf.Example.Program</StartupObject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Fluxonaut.Browser.Core\Fluxonaut.Browser.Core.netcore.vcxproj" />
+        <ProjectReference Include="..\Fluxonaut.Browser.Example\Fluxonaut.Browser.Example.netcore.csproj" />
+        <ProjectReference Include="..\Fluxonaut.Browser.Wpf\Fluxonaut.Browser.Wpf.netcore.csproj" />
+        <ProjectReference Include="..\Fluxonaut.Browser\Fluxonaut.Browser.netcore.csproj" />
+        <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
+        <PackageReference Include="fluxonaut.redist.x86" Version="2.3.0" />
+        <PackageReference Include="fluxonaut.redist.x64" Version="2.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="crash_reporter.cfg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Don't include items from the "bin" and "obj" folders used by the .NET Framework projects. -->
+        <None Remove="bin/**/*.*" />
+        <None Remove="obj/**/*.*" />
+        <Compile Remove="obj/**/*.*" />
+    </ItemGroup>
+
+    <Import Project="$(SolutionDir)\Fluxonaut.Browser.AfterBuild.targets" />
+    <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk.WindowsDesktop" />
+</Project>

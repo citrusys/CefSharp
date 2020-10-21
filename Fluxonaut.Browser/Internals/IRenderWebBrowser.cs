@@ -5,6 +5,7 @@
 using System;
 using Fluxonaut.Browser.Enums;
 using Fluxonaut.Browser.Structs;
+using Range = Fluxonaut.Browser.Structs.Range;
 
 namespace Fluxonaut.Browser.Internals
 {

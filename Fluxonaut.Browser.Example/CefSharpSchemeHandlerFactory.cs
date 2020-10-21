@@ -36,6 +36,9 @@ namespace Fluxonaut.Browser.Example
                 { "/bootstrap/bootstrap.min.js", Resources.bootstrap_min_js },
 
                 { "/BindingTest.html", Resources.BindingTest },
+                { "/BindingTestNetCore.html", Resources.BindingTestNetCore },
+                { "/BindingTestAsync.js", Resources.BindingTestAsync },
+                { "/BindingTestSync.js", Resources.BindingTestSync },
                 { "/BindingTestSingle.html", Resources.BindingTestSingle },
                 { "/LegacyBindingTest.html", Resources.LegacyBindingTest },
                 { "/PostMessageTest.html", Resources.PostMessageTest },
@@ -76,7 +79,7 @@ namespace Fluxonaut.Browser.Example
             {
                 //Convenient helper method to lookup the mimeType
                 var mimeType = Cef.GetMimeType("xml");
-                //Load a resource handler for CefSharp.Core.xml
+                //Load a resource handler for Fluxonaut.Browser.Core.xml
                 //mimeType is optional and will default to text/html
                 return ResourceHandler.FromFilePath("Fluxonaut.Browser.Core.xml", mimeType, autoDisposeStream: true);
             }

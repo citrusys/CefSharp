@@ -24,6 +24,11 @@ namespace Fluxonaut
 
             }
 
+            CefWindowInfo* GetWindowInfo()
+            {
+                return _windowInfo;
+            }
+
         public:
             WindowInfo() : _windowInfo(new CefWindowInfo())
             {
@@ -204,11 +209,6 @@ namespace Fluxonaut
             virtual void SetAsWindowless(IntPtr parentHandle)
             {
                 _windowInfo->SetAsWindowless((HWND)parentHandle.ToPointer());
-            }
-
-            CefWindowInfo* GetWindowInfo()
-            {
-                return _windowInfo;
             }
         };
     }

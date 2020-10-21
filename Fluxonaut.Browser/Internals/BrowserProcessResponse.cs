@@ -5,7 +5,7 @@
 using System.Runtime.Serialization;
 
 
-namespace Fluxonaut.Browser.Internals
+namespace Fluxonaut.Browser.Wcf
 {
     [DataContract]
     [KnownType(typeof(bool[]))]

@@ -29,7 +29,7 @@
                     asyncCallback();
                 };
 
-                CefSharp.PostMessage({ "Type": "Update", Data: { "Property": 123 }, "Callback": responseFunc });
+                FluxonautBrowser.PostMessage({ "Type": "Update", Data: { "Property": 123 }, "Callback": responseFunc });
             });
 
             QUnit.test("PostMessage Int Test:", function (assert)
@@ -44,7 +44,7 @@
                     asyncCallback();
                 };
 
-                CefSharp.PostMessage(expectedResult);
+                FluxonautBrowser.PostMessage(expectedResult);
             });
         })();
     </script>

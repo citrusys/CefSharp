@@ -22,10 +22,6 @@ namespace Fluxonaut
         {
         private:
             /// <summary>
-            /// CEF V8 Extensions
-            /// </summary>
-            List<V8Extension^>^ _cefExtensions;
-            /// <summary>
             /// Command Line Arguments Dictionary. 
             /// </summary>
             CommandLineArgDictionary^ _cefCommandLineArgs;
@@ -50,7 +46,6 @@ namespace Fluxonaut
                 _cefSettings->no_sandbox = true;
                 BrowserSubprocessPath = Path::Combine(Path::GetDirectoryName(CefSettingsBase::typeid->Assembly->Location), "Fluxonaut.Browser.BrowserSubprocess.exe");
                 _cefCustomSchemes = gcnew List<CefCustomScheme^>();
-                _cefExtensions = gcnew List<V8Extension^>();
                 _cefCommandLineArgs = gcnew CommandLineArgDictionary();
 
                 //Disable site isolation trials as this causes problems with frames
@@ -81,14 +76,6 @@ namespace Fluxonaut
             property IEnumerable<CefCustomScheme^>^ CefCustomSchemes
             {
                 IEnumerable<CefCustomScheme^>^ get() { return _cefCustomSchemes; }
-            }
-
-            /// <summary>
-            /// List of all V8Extensions to be registered using CefRegisterExtension in the render process.
-            /// </summary>
-            virtual property IEnumerable<V8Extension^>^ Extensions
-            {
-                IEnumerable<V8Extension^>^ get() { return _cefExtensions; }
             }
 
             /// <summary>
@@ -165,7 +152,7 @@ namespace Fluxonaut
             /// The root directory that all CefSettings.CachePath and RequestContextSettings.CachePath values must have in common. If this
             /// value is empty and CefSettings.CachePath is non-empty then it will default to the CefSettings.CachePath value.
             /// If this value is non-empty then it must be an absolute path.  Failure to set this value correctly may result in the sandbox
-            /// blocking read/write access to the CachePath directory. NOTE: Fluxonaut.Browser does not implement the CHROMIUM SANDBOX. A non-empty
+            /// blocking read/write access to the CachePath directory. NOTE: FluxonautBrowser does not implement the CHROMIUM SANDBOX. A non-empty
             /// RootCachePath can be used in conjuncation with an empty CefSettings.CachePath in instances where you would like browsers
             /// attached to the Global RequestContext (the default) created in "incognito mode" and instances created with a custom
             /// RequestContext using a disk based cache.
@@ -392,20 +379,6 @@ namespace Fluxonaut
                 cefCustomScheme->SchemeName = cefCustomScheme->SchemeName->ToLower();
 
                 _cefCustomSchemes->Add(cefCustomScheme);
-            }
-
-            /// <summary>
-            /// Register a new V8 extension with the specified JavaScript extension code.
-            /// </summary>
-            /// <exception cref="ArgumentException">Thrown when one or more arguments have unsupported or illegal values.</exception>
-            /// <param name="extension">The V8Extension that contains the extension code.</param>
-            void RegisterExtension(V8Extension^ extension)
-            {
-                if (_cefExtensions->Contains(extension))
-                {
-                    throw gcnew ArgumentException("An extension with the same name is already registered.", "extension");
-                }
-                _cefExtensions->Add(extension);
             }
 
             /// <summary>

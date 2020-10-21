@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace Fluxonaut.Browser.Internals
+namespace Fluxonaut.Browser.Wcf
 {
     internal sealed class JavascriptCallbackSurrogate : IDataContractSurrogate
     {

@@ -8,7 +8,7 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 
-namespace Fluxonaut.Browser.Internals
+namespace Fluxonaut.Browser.Wcf
 {
     internal sealed class JavascriptCallbackEndpointBehavior : IEndpointBehavior
     {

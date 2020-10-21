@@ -49,6 +49,15 @@ namespace Fluxonaut
                     _disposed = true;
                 }
 
+                operator CefRefPtr<CefDragData>()
+                {
+                    if (this == nullptr)
+                    {
+                        return NULL;
+                    }
+                    return _wrappedDragData.get();
+                }
+
             public:
                 virtual property bool IsReadOnly;
                 virtual property String^ FileName;
@@ -211,15 +220,6 @@ namespace Fluxonaut
 
                     auto writer = CefStreamWriter::CreateForHandler(writeHandler);
                     return (Int64)_wrappedDragData->GetFileContents(writer);
-                }
-
-                operator CefRefPtr<CefDragData>()
-                {
-                    if (this == nullptr)
-                    {
-                        return NULL;
-                    }
-                    return _wrappedDragData.get();
                 }
             };
         }

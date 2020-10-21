@@ -28,7 +28,7 @@ namespace Fluxonaut.Browser.Example.RequestEventHandler
         public IRequestCallback Callback { get; private set; }
 
         /// <summary>
-        ///     Set to false to cancel the request immediately. Set to true and use <see cref="T:CefSharp.IRequestCallback" /> to
+        ///     Set to false to cancel the request immediately. Set to true and use <see cref="T:Fluxonaut.Browser.IRequestCallback" /> to
         ///     execute in an async fashion.
         /// </summary>
         public bool ContinueAsync { get; set; }

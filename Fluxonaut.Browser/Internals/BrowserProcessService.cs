@@ -5,7 +5,7 @@
 using System.ServiceModel;
 
 
-namespace Fluxonaut.Browser.Internals
+namespace Fluxonaut.Browser.Wcf
 {
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession, ConcurrencyMode = ConcurrencyMode.Multiple)]
     internal class BrowserProcessService : IBrowserProcess

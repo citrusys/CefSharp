@@ -42,9 +42,18 @@ namespace Fluxonaut
 
                 virtual void OnRequestContextInitialized(CefRefPtr<CefRequestContext> requestContext) OVERRIDE;
 
+                virtual CefRefPtr<CefResourceRequestHandler> GetResourceRequestHandler(
+                    CefRefPtr<CefBrowser> browser,
+                    CefRefPtr<CefFrame> frame,
+                    CefRefPtr<CefRequest> request,
+                    bool is_navigation,
+                    bool is_download,
+                    const CefString& request_initiator,
+                    bool& disable_default_handling) OVERRIDE;
+
                 IMPLEMENT_REFCOUNTING(CefRequestContextHandlerAdapter);
             };
         }
     }
-    #endif  // CEFSHARP_CORE_INTERNALS_CEFREQUESTCONTEXTHANDLERADAPTER_H_
 }
+#endif  // CEFSHARP_CORE_INTERNALS_CEFREQUESTCONTEXTHANDLERADAPTER_H_

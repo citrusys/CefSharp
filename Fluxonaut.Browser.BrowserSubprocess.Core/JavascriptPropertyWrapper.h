@@ -8,6 +8,8 @@
 #include "include/cef_v8.h"
 #include "JavascriptCallbackRegistry.h"
 
+using namespace Fluxonaut::Browser::Internals::Wcf;
+
 namespace Fluxonaut
 {
     namespace Browser

@@ -6,7 +6,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Fluxonaut.Browser.Example.Properties;
 using Fluxonaut.Browser.Example.Proxy;
 using Fluxonaut.Browser.SchemeHandler;
 
@@ -20,6 +19,7 @@ namespace Fluxonaut.Browser.Example
         public const string BaseUrl = "https://" + ExampleDomain;
         public const string DefaultUrl = BaseUrl + "/home.html";
         public const string BindingTestUrl = BaseUrl + "/BindingTest.html";
+        public const string BindingTestNetCoreUrl = BaseUrl + "/BindingTestNetCore.html";
         public const string BindingTestSingleUrl = BaseUrl + "/BindingTestSingle.html";
         public const string BindingTestsAsyncTaskUrl = BaseUrl + "/BindingTestsAsyncTask.html";
         public const string LegacyBindingTestUrl = BaseUrl + "/LegacyBindingTest.html";
@@ -38,6 +38,9 @@ namespace Fluxonaut.Browser.Example
         public const string RenderProcessCrashedUrl = "http://processcrashed";
         public const string TestUnicodeResourceUrl = "http://test/resource/loadUnicode";
         public const string PopupParentUrl = "http://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_win_close";
+        public const string ChromeInternalUrls = "chrome://chrome-urls";
+        public const string ChromeNetInternalUrls = "chrome://net-internals";
+        public const string ChromeProcessInternalUrls = "chrome://process-internals";
 
         // Use when debugging the actual SubProcess, to make breakpoints etc. inside that project work.
         private static readonly bool DebuggingSubProcess = Debugger.IsAttached;
@@ -161,8 +164,13 @@ namespace Fluxonaut.Browser.Example
 
             if (DebuggingSubProcess)
             {
+
+#if NETCOREAPP
+                settings.BrowserSubprocessPath = Path.GetFullPath("..\\..\\..\\..\\..\\Fluxonaut.Browser.BrowserSubprocess\\bin.netcore\\Debug\\netcoreapp3.1\\Fluxonaut.Browser.BrowserSubprocess.exe");
+#else
                 var architecture = Environment.Is64BitProcess ? "x64" : "x86";
                 settings.BrowserSubprocessPath = Path.GetFullPath("..\\..\\..\\..\\Fluxonaut.Browser.BrowserSubprocess\\bin\\" + architecture + "\\Debug\\Fluxonaut.Browser.BrowserSubprocess.exe");
+#endif
             }
 
             settings.RegisterScheme(new CefCustomScheme
@@ -195,16 +203,21 @@ namespace Fluxonaut.Browser.Example
                 IsSecure = true //treated with the same security rules as those applied to "https" URLs
             });
 
+            const string cefSharpExampleResourcesFolder =
+#if !NETCOREAPP
+                @"..\..\..\..\Fluxonaut.Browser.Example\Resources";
+#else
+                @"..\..\..\..\..\Fluxonaut.Browser.Example\Resources";
+#endif
+
             settings.RegisterScheme(new CefCustomScheme
             {
                 SchemeName = "localfolder",
-                SchemeHandlerFactory = new FolderSchemeHandlerFactory(rootFolder: @"..\..\..\..\Fluxonaut.Browser.Example\Resources",
+                SchemeHandlerFactory = new FolderSchemeHandlerFactory(rootFolder: cefSharpExampleResourcesFolder,
                                                                     schemeName: "localfolder", //Optional param no schemename checking if null
                                                                     hostName: "fluxonautbrowser", //Optional param no hostname checking if null
                                                                     defaultPage: "home.html") //Optional param will default to index.html
             });
-
-            settings.RegisterExtension(new V8Extension("fluxonautbrowser/example", Resources.extension));
 
             //This must be set before Cef.Initialized is called
             CefSharpSettings.FocusedNodeChangedEnabled = true;
@@ -227,7 +240,9 @@ namespace Fluxonaut.Browser.Example
             //see https://github.com/cefsharp/CefSharp/wiki/General-Usage#proxy-resolution
             //CefSharpSettings.Proxy = new ProxyOptions(ip: "127.0.0.1", port: "8080", username: "fluxonautbrowser", password: "123");
 
-            if (!Cef.Initialize(settings, performDependencyCheck: !DebuggingSubProcess, browserProcessHandler: browserProcessHandler))
+            bool performDependencyCheck = !DebuggingSubProcess;
+
+            if (!Cef.Initialize(settings, performDependencyCheck: performDependencyCheck, browserProcessHandler: browserProcessHandler))
             {
                 throw new Exception("Unable to Initialize Cef");
             }

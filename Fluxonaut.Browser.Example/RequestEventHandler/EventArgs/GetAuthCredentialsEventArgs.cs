@@ -33,7 +33,7 @@ namespace Fluxonaut.Browser.Example.RequestEventHandler
 
         /// <summary>
         ///     Set to true to continue the request and call
-        ///     <see cref="T:CefSharp.GetAuthCredentialsEventArgs.Continue(System.String, System.String)" /> when the authentication information
+        ///     <see cref="T:Fluxonaut.Browser.GetAuthCredentialsEventArgs.Continue(System.String, System.String)" /> when the authentication information
         ///     is available. Set to false to cancel the request.
         /// </summary>
         public bool ContinueAsync { get; set; }

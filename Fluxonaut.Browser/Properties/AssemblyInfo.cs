@@ -1,6 +1,5 @@
 using System;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Fluxonaut.Browser;
 
@@ -18,13 +17,6 @@ using Fluxonaut.Browser;
 [assembly: AssemblyFileVersion(AssemblyInfo.AssemblyFileVersion)]
 [assembly: CLSCompliant(AssemblyInfo.ClsCompliant)]
 
-[assembly: InternalsVisibleTo(AssemblyInfo.FluxonautBrowserCoreProject)]
-[assembly: InternalsVisibleTo(AssemblyInfo.FluxonautBrowserBrowserSubprocessProject)]
-[assembly: InternalsVisibleTo(AssemblyInfo.FluxonautBrowserBrowserSubprocessCoreProject)]
-[assembly: InternalsVisibleTo(AssemblyInfo.FluxonautBrowserWpfProject)]
-[assembly: InternalsVisibleTo(AssemblyInfo.FluxonautBrowserOffScreenProject)]
-
-
 namespace Fluxonaut.Browser
 {
     /// <exclude />
@@ -34,8 +26,8 @@ namespace Fluxonaut.Browser
         public const bool ComVisible = false;
         public const string AssemblyCompany = "The Fluxonaut Authors";
         public const string AssemblyProduct = "Fluxonaut Browser";
-        public const string AssemblyVersion = "2.2.3";
-        public const string AssemblyFileVersion = "2.2.3.0";
+        public const string AssemblyVersion = "2.3.0";
+        public const string AssemblyFileVersion = "2.3.0.0";
         public const string AssemblyCopyright = "Copyright © 2020 The Fluxonaut Authors";
         public const string FluxonautBrowserCoreProject = "Fluxonaut.Browser.Core";
         public const string FluxonautBrowserBrowserSubprocessProject = "Fluxonaut.Browser.BrowserSubprocess";

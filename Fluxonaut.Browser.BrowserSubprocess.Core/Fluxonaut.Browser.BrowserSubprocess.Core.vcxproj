@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\fluxonaut.browser.sdk.2.2.3\build\fluxonaut.browser.sdk.props" Condition="Exists('..\packages\fluxonaut.browser.sdk.2.2.3\build\fluxonaut.browser.sdk.props')" />
+  <Import Project="..\packages\fluxonaut.browser.sdk.2.3.0\build\fluxonaut.browser.sdk.props" Condition="Exists('..\packages\fluxonaut.browser.sdk.2.3.0\build\fluxonaut.browser.sdk.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -176,6 +176,8 @@
     <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\StringUtils.h" />
     <ClInclude Include="BindObjectAsyncHandler.h" />
     <ClCompile Include="BrowserSubprocessExecutable.h" />
+    <ClInclude Include="Cef.h" />
+    <ClInclude Include="JavascriptPromiseHandler.h" />
     <ClInclude Include="SubProcessApp.h" />
     <ClInclude Include="Async\JavascriptAsyncMethodCallback.h" />
     <ClInclude Include="Async\JavascriptAsyncMethodHandler.h" />
@@ -252,6 +254,6 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\fluxonaut.browser.sdk.2.2.3\build\fluxonaut.browser.sdk.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\fluxonaut.browser.sdk.2.2.3\build\fluxonaut.browser.sdk.props'))" />
+    <Error Condition="!Exists('..\packages\fluxonaut.browser.sdk.2.3.0\build\fluxonaut.browser.sdk.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\fluxonaut.browser.sdk.2.3.0\build\fluxonaut.browser.sdk.props'))" />
   </Target>
 </Project>

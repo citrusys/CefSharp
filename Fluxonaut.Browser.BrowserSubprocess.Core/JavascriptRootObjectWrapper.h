@@ -6,7 +6,9 @@
 
 #include "include/cef_v8.h"
 #include "JavascriptCallbackRegistry.h"
+#ifndef NETCOREAPP
 #include "JavascriptObjectWrapper.h"
+#endif
 #include "Async/JavascriptAsyncObjectWrapper.h"
 
 using namespace System::Runtime::Serialization;
@@ -14,7 +16,9 @@ using namespace System::Linq;
 using namespace System::Collections::Generic;
 
 using namespace Fluxonaut::Browser::Internals::Async;
-
+#ifndef NETCOREAPP
+using namespace Fluxonaut::Browser::Internals::Wcf;
+#endif
 
 namespace Fluxonaut
 {
@@ -31,10 +35,14 @@ namespace Fluxonaut
             //Is static so ids are unique to this process https://github.com/cefsharp/CefSharp/issues/2792
             static int64 _lastCallback;
 
+    #ifndef NETCOREAPP
             initonly List<JavascriptObjectWrapper^>^ _wrappedObjects;
+    #endif
             initonly List<JavascriptAsyncObjectWrapper^>^ _wrappedAsyncObjects;
             initonly Dictionary<int64, JavascriptAsyncMethodCallback^>^ _methodCallbacks;
+    #ifndef NETCOREAPP
             IBrowserProcess^ _browserProcess;
+    #endif
             // The entire set of possible JavaScript functions to
             // call directly into.
             JavascriptCallbackRegistry^ _callbackRegistry;
@@ -48,10 +56,16 @@ namespace Fluxonaut
             }
 
         public:
+    #ifdef NETCOREAPP
+            JavascriptRootObjectWrapper(int browserId)
+    #else
             JavascriptRootObjectWrapper(int browserId, IBrowserProcess^ browserProcess)
+    #endif
             {
+    #ifndef NETCOREAPP
                 _browserProcess = browserProcess;
                 _wrappedObjects = gcnew List<JavascriptObjectWrapper^>();
+    #endif
                 _wrappedAsyncObjects = gcnew List<JavascriptAsyncObjectWrapper^>();
                 _callbackRegistry = gcnew JavascriptCallbackRegistry(browserId);
                 _methodCallbacks = gcnew Dictionary<int64, JavascriptAsyncMethodCallback^>();
@@ -65,19 +79,22 @@ namespace Fluxonaut
                     _callbackRegistry = nullptr;
                 }
 
-                for each (JavascriptObjectWrapper ^ var in _wrappedObjects)
+    #ifndef NETCOREAPP
+                for each (JavascriptObjectWrapper^ var in _wrappedObjects)
                 {
                     delete var;
                 }
                 _wrappedObjects->Clear();
 
-                for each (JavascriptAsyncObjectWrapper ^ var in _wrappedAsyncObjects)
+    #endif
+
+                for each (JavascriptAsyncObjectWrapper^ var in _wrappedAsyncObjects)
                 {
                     delete var;
                 }
                 _wrappedAsyncObjects->Clear();
 
-                for each (JavascriptAsyncMethodCallback ^ var in _methodCallbacks->Values)
+                for each(JavascriptAsyncMethodCallback^ var in _methodCallbacks->Values)
                 {
                     delete var;
                 }

@@ -1,13 +1,15 @@
-﻿var cefsharp;
-if (!cefsharp)
-    cefsharp = {};
+﻿var Fluxonaut;
+if (!Fluxonaut)
+    Fluxonaut = {
+        Browser = {},
+    };
 
-if (!cefsharp.example)
-    cefsharp.example = {};
+if (!Fluxonaut.Browser.example)
+    Fluxonaut.Browser.example = {};
 
 (function ()
 {
-    cefsharp.example.alert = function(text)
+    Fluxonaut.Browser.example.alert = function(text)
     {
         alert(text);
     };

@@ -482,7 +482,7 @@ bool CefBrowserHostWrapper::IsBackgroundHost::get()
     return _browserHost->IsBackgroundHost();
 }
 
-void CefBrowserHostWrapper::ImeSetComposition(String^ text, cli::array<CompositionUnderline>^ underlines, Nullable<Range> replacementRange, Nullable<Range> selectionRange)
+void CefBrowserHostWrapper::ImeSetComposition(String^ text, cli::array<CompositionUnderline>^ underlines, Nullable<Fluxonaut::Browser::Structs::Range> replacementRange, Nullable<Fluxonaut::Browser::Structs::Range> selectionRange)
 {
     ThrowIfDisposed();
 
@@ -499,6 +499,7 @@ void CefBrowserHostWrapper::ImeSetComposition(String^ text, cli::array<Compositi
             c.color = underline.Color;
             c.background_color = underline.BackgroundColor;
             c.thick = (int)underline.Thick;
+            c.style = (cef_composition_underline_style_t)underline.Style;
             underlinesVector.push_back(c);
         }
     }
@@ -516,7 +517,7 @@ void CefBrowserHostWrapper::ImeSetComposition(String^ text, cli::array<Compositi
     _browserHost->ImeSetComposition(StringUtils::ToNative(text), underlinesVector, repRange, selRange);
 }
 
-void CefBrowserHostWrapper::ImeCommitText(String^ text, Nullable<Range> replacementRange, int relativeCursorPos)
+void CefBrowserHostWrapper::ImeCommitText(String^ text, Nullable<Fluxonaut::Browser::Structs::Range> replacementRange, int relativeCursorPos)
 {
     ThrowIfDisposed();
 

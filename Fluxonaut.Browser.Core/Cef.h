@@ -82,8 +82,8 @@ namespace Fluxonaut
                 _disposables->Remove(item);
             }
 
-            /// <summary>Gets a value that indicates whether Fluxonaut.Browser is initialized.</summary>
-            /// <value>true if Fluxonaut.Browser is initialized; otherwise, false.</value>
+            /// <summary>Gets a value that indicates whether FluxonautBrowser is initialized.</summary>
+            /// <value>true if FluxonautBrowser is initialized; otherwise, false.</value>
             static property bool IsInitialized
             {
                 bool get()
@@ -98,8 +98,8 @@ namespace Fluxonaut
                 }
             }
 
-            /// <summary>Gets a value that indicates the version of Fluxonaut.Browser currently being used.</summary>
-            /// <value>The Fluxonaut.Browser version.</value>
+            /// <summary>Gets a value that indicates the version of FluxonautBrowser currently being used.</summary>
+            /// <value>The FluxonautBrowser version.</value>
             static property String^ CefSharpVersion
             {
                 String^ get()
@@ -145,12 +145,12 @@ namespace Fluxonaut
             }
 
             /// <summary>
-            /// Initializes Fluxonaut.Browser with user-provided settings.
+            /// Initializes FluxonautBrowser with user-provided settings.
             /// It's important to note that Initialize and Shutdown <strong>MUST</strong> be called on your main
-            /// applicaiton thread (Typically the UI thead). If you call them on different
+            /// application thread (typically the UI thread). If you call them on different
             /// threads, your application will hang. See the documentation for Cef.Shutdown() for more details.
             /// </summary>
-            /// <param name="cefSettings">Fluxonaut.Browser configuration settings.</param>
+            /// <param name="cefSettings">FluxonautBrowser configuration settings.</param>
             /// <returns>true if successful; otherwise, false.</returns>
             static bool Initialize(CefSettingsBase^ cefSettings)
             {
@@ -160,12 +160,28 @@ namespace Fluxonaut
             }
 
             /// <summary>
-            /// Initializes Fluxonaut.Browser with user-provided settings.
+            /// Initializes FluxonautBrowser with user-provided settings.
+            /// It's important to note that Initialize/Shutdown <strong>MUST</strong> be called on your main
+            /// application thread (typically the UI thread). If you call them on different
+            /// threads, your application will hang. See the documentation for Cef.Shutdown() for more details.
+            /// </summary>
+            /// <param name="cefSettings">FluxonautBrowser configuration settings.</param>
+            /// <param name="performDependencyCheck">Check that all relevant dependencies avaliable, throws exception if any are missing</param>
+            /// <returns>true if successful; otherwise, false.</returns>
+            static bool Initialize(CefSettingsBase^ cefSettings, bool performDependencyCheck)
+            {
+                auto cefApp = gcnew DefaultApp(nullptr, cefSettings->CefCustomSchemes);
+
+                return Initialize(cefSettings, performDependencyCheck, cefApp);
+            }
+
+            /// <summary>
+            /// Initializes FluxonautBrowser with user-provided settings.
             /// It's important to note that Initialize/Shutdown <strong>MUST</strong> be called on your main
             /// applicaiton thread (Typically the UI thead). If you call them on different
             /// threads, your application will hang. See the documentation for Cef.Shutdown() for more details.
             /// </summary>
-            /// <param name="cefSettings">Fluxonaut.Browser configuration settings.</param>
+            /// <param name="cefSettings">FluxonautBrowser configuration settings.</param>
             /// <param name="performDependencyCheck">Check that all relevant dependencies avaliable, throws exception if any are missing</param>
             /// <param name="browserProcessHandler">The handler for functionality specific to the browser process. Null if you don't wish to handle these events</param>
             /// <returns>true if successful; otherwise, false.</returns>
@@ -177,12 +193,12 @@ namespace Fluxonaut
             }
 
             /// <summary>
-            /// Initializes Fluxonaut.Browser with user-provided settings.
+            /// Initializes FluxonautBrowser with user-provided settings.
             /// It's important to note that Initialize/Shutdown <strong>MUST</strong> be called on your main
-            /// applicaiton thread (Typically the UI thead). If you call them on different
+            /// application thread (typically the UI thread). If you call them on different
             /// threads, your application will hang. See the documentation for Cef.Shutdown() for more details.
             /// </summary>
-            /// <param name="cefSettings">Fluxonaut.Browser configuration settings.</param>
+            /// <param name="cefSettings">FluxonautBrowser configuration settings.</param>
             /// <param name="performDependencyCheck">Check that all relevant dependencies avaliable, throws exception if any are missing</param>
             /// <param name="cefApp">Implement this interface to provide handler implementations. Null if you don't wish to handle these events</param>
             /// <returns>true if successful; otherwise, false.</returns>
@@ -223,9 +239,8 @@ namespace Fluxonaut
                 IOThreadTaskFactory = gcnew TaskFactory(gcnew CefTaskScheduler(TID_IO));
                 FileThreadTaskFactory = gcnew TaskFactory(gcnew CefTaskScheduler(TID_FILE));
 
-                //Allows us to execute Tasks on the CEF UI thread in Fluxonaut.Browser.dll
-                CefThread::UiThreadTaskFactory = UIThreadTaskFactory;
-                CefThread::CurrentOnUiThreadDelegate = gcnew Func<bool>(&CurrentOnUiThread); ;
+                //Allows us to execute Tasks on the CEF UI thread in FluxonautBrowser.dll
+                CefThread::Initialize(UIThreadTaskFactory, gcnew Func<bool>(&CurrentOnUiThread));
 
                 //To allow FolderSchemeHandlerFactory to access GetMimeType we pass in a Func
                 Fluxonaut::Browser::SchemeHandler::FolderSchemeHandlerFactory::GetMimeTypeDelegate = gcnew Func<String^, String^>(&GetMimeType);
@@ -457,10 +472,10 @@ namespace Fluxonaut
             }
 
             /// <summary>
-            /// Shuts down Fluxonaut.Browser and the underlying CEF infrastructure. This method is safe to call multiple times; it will only
+            /// Shuts down FluxonautBrowser and the underlying CEF infrastructure. This method is safe to call multiple times; it will only
             /// shut down CEF on the first call (all subsequent calls will be ignored).
             /// This method should be called on the main application thread to shut down the CEF browser process before the application exits. 
-            /// If you are using Fluxonaut.Browser.OffScreen then you must call this explicitly before your application exits or it will hang.
+            /// If you are Using Fluxonaut.Browser.OffScreen then you must call this explicitly before your application exits or it will hang.
             /// This method must be called on the same thread as Initialize. If you don't call Shutdown explicitly then Fluxonaut.Browser.Wpf and Fluxonaut.Browser.WinForms
             /// versions will do their best to call Shutdown for you, if your application is having trouble closing then call thus explicitly.
             /// </summary>
@@ -483,8 +498,8 @@ namespace Fluxonaut
                         UIThreadTaskFactory = nullptr;
                         IOThreadTaskFactory = nullptr;
                         FileThreadTaskFactory = nullptr;
-                        CefThread::UiThreadTaskFactory = nullptr;
-                        CefThread::CurrentOnUiThreadDelegate = nullptr;
+
+                        CefThread::Shutdown();
 
                         for each(IDisposable^ diposable in Enumerable::ToList(_disposables))
                         {
@@ -560,7 +575,7 @@ namespace Fluxonaut
             /// Async returns a list containing Plugin Information
             /// (Wrapper around CefVisitWebPluginInfo)
             /// </summary>
-            /// <returns>Returns List of <see cref="Plugin"/> structs.</returns>
+            /// <returns>Returns List of <see cref="WebPluginInfo"/> structs.</returns>
             static Task<List<WebPluginInfo^>^>^ GetPlugins()
             {
                 auto taskVisitor = gcnew TaskWebPluginInfoVisitor();
@@ -739,7 +754,7 @@ namespace Fluxonaut
             /// platform-specific CDM binary distribution from Google, extracting the
             /// contents, and building the required directory structure on the local machine.
             /// The <see cref="Fluxonaut::Browser::IBrowserHost::StartDownload"/> method class can be used
-            /// to implement this functionality in Fluxonaut.Browser. Contact Google via
+            /// to implement this functionality in FluxonautBrowser. Contact Google via
             /// https://www.widevine.com/contact.html for details on CDM download.
             /// 
             /// 
@@ -771,7 +786,7 @@ namespace Fluxonaut
             /// will receive an ErrorCode value of <see cref="CdmRegistrationErrorCode::NotSupported"/>.
             /// </summary>
             /// <param name="path"> is a directory that contains the Widevine CDM files</param>
-            /// <param name="callback">optional callback - <see cref="IRegisterCdmCallback::OnRegistrationCompletecallback"/> 
+            /// <param name="callback">optional callback - <see cref="IRegisterCdmCallback::OnRegistrationComplete"/> 
             /// will be executed asynchronously once registration is complete</param>
             static void RegisterWidevineCdm(String^ path, [Optional] IRegisterCdmCallback^ callback)
             {
@@ -887,5 +902,5 @@ namespace Fluxonaut
             }
         };
     }
-    #endif  // CEFSHARP_CORE_CEF_H_
 }
+#endif  // CEFSHARP_CORE_CEF_H_

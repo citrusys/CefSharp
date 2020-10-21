@@ -1,4 +1,4 @@
-// Copyright © 2014 The CefSharp Authors. All rights reserved.
+// Copyright © 2014 The Fluxonaut Authors. All rights reserved.
 //
 // Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
 
@@ -12,6 +12,7 @@
 #include "BindObjectAsyncHandler.h"
 #include "JavascriptPostMessageHandler.h"
 #include "JavascriptRootObjectWrapper.h"
+#include "JavascriptPromiseHandler.h"
 #include "Async\JavascriptAsyncMethodCallback.h"
 #include "Serialization\V8Serialization.h"
 #include "Serialization\JsObjectsSerialization.h"
@@ -43,6 +44,9 @@ namespace Fluxonaut
             "   return result;"
             "})();";
 
+        const CefString kRenderProcessId = CefString("RenderProcessId");
+        const CefString kRenderProcessIdCamelCase = CefString("renderProcessId");
+
         CefRefPtr<CefRenderProcessHandler> CefAppUnmanagedWrapper::GetRenderProcessHandler()
         {
             return this;
@@ -71,7 +75,7 @@ namespace Fluxonaut
                     {
                         auto javascriptObjects = DeserializeJsObjects(objects, 0);
 
-                        for each (JavascriptObject ^ obj in Enumerable::OfType<JavascriptObject^>(javascriptObjects))
+                        for each (JavascriptObject^ obj in Enumerable::OfType<JavascriptObject^>(javascriptObjects))
                         {
                             //Using LegacyBinding with multiple ChromiumWebBrowser instances that share the same
                             //render process and using LegacyBinding will cause problems for the limited caching implementation
@@ -97,8 +101,8 @@ namespace Fluxonaut
             }
             else
             {
-                _jsBindingPropertyName = "CefSharp";
-                _jsBindingPropertyNameCamelCase = "cefSharp";
+                _jsBindingPropertyName = "FluxonautBrowser";
+                _jsBindingPropertyNameCamelCase = "fluxonautBrowser";
             }
         }
 
@@ -120,7 +124,7 @@ namespace Fluxonaut
                 Frame frameWrapper(frame);
                 V8Context contextWrapper(context);
 
-                _handler->OnContextCreated(% browserWrapper, % frameWrapper, % contextWrapper);
+                _handler->OnContextCreated(%browserWrapper, %frameWrapper, %contextWrapper);
             }
 
             auto rootObject = GetJsRootObjectWrapper(browser->GetIdentifier(), frame->GetIdentifier());
@@ -136,6 +140,7 @@ namespace Fluxonaut
             //TODO: Look at adding some sort of javascript mapping layer to reduce the code duplication
             auto global = context->GetGlobal();
             auto browserWrapper = FindBrowserWrapper(browser->GetIdentifier());
+            auto processId = System::Diagnostics::Process::GetCurrentProcess()->Id;
 
             //TODO: JSB: Split functions into their own classes
             //Browser wrapper is only used for BindObjectAsync
@@ -144,8 +149,9 @@ namespace Fluxonaut
             auto removeObjectFromCacheFunction = CefV8Value::CreateFunction(kRemoveObjectFromCache, new RegisterBoundObjectHandler(_javascriptObjects));
             auto isObjectCachedFunction = CefV8Value::CreateFunction(kIsObjectCached, new RegisterBoundObjectHandler(_javascriptObjects));
             auto postMessageFunction = CefV8Value::CreateFunction(kPostMessage, new JavascriptPostMessageHandler(rootObject == nullptr ? nullptr : rootObject->CallbackRegistry));
+            auto promiseHandlerFunction = CefV8Value::CreateFunction(kSendEvalScriptResponse, new JavascriptPromiseHandler());
 
-            //By default We'll support both CefSharp and cefSharp, for those who prefer the JS style
+            //By default We'll support both FluxonautBrowser and fluxonautBrowser, for those who prefer the JS style
             auto createCefSharpObj = !_jsBindingPropertyName.empty();
             auto createCefSharpObjCamelCase = !_jsBindingPropertyNameCamelCase.empty();
 
@@ -157,6 +163,8 @@ namespace Fluxonaut
                 cefSharpObj->SetValue(kRemoveObjectFromCache, removeObjectFromCacheFunction, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
                 cefSharpObj->SetValue(kIsObjectCached, isObjectCachedFunction, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
                 cefSharpObj->SetValue(kPostMessage, postMessageFunction, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
+                cefSharpObj->SetValue(kSendEvalScriptResponse, promiseHandlerFunction, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
+                cefSharpObj->SetValue(kRenderProcessId, CefV8Value::CreateInt(processId), CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
 
                 global->SetValue(_jsBindingPropertyName, cefSharpObj, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_READONLY);
             }
@@ -169,6 +177,8 @@ namespace Fluxonaut
                 cefSharpObjCamelCase->SetValue(kRemoveObjectFromCacheCamelCase, removeObjectFromCacheFunction, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
                 cefSharpObjCamelCase->SetValue(kIsObjectCachedCamelCase, isObjectCachedFunction, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
                 cefSharpObjCamelCase->SetValue(kPostMessageCamelCase, postMessageFunction, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
+                cefSharpObjCamelCase->SetValue(kSendEvalScriptResponseCamelCase, promiseHandlerFunction, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
+                cefSharpObjCamelCase->SetValue(kRenderProcessIdCamelCase, CefV8Value::CreateInt(processId), CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_NONE);
 
                 global->SetValue(_jsBindingPropertyNameCamelCase, cefSharpObjCamelCase, CefV8Value::PropertyAttribute::V8_PROPERTY_ATTRIBUTE_READONLY);
             }
@@ -190,7 +200,7 @@ namespace Fluxonaut
                 Frame frameWrapper(frame);
                 V8Context contextWrapper(context);
 
-                _handler->OnContextReleased(% browserWrapper, % frameWrapper, % contextWrapper);
+                _handler->OnContextReleased(%browserWrapper, %frameWrapper, %contextWrapper);
             }
 
             auto contextReleasedMessage = CefProcessMessage::Create(kOnContextReleasedRequest);
@@ -294,7 +304,11 @@ namespace Fluxonaut
             JavascriptRootObjectWrapper^ rootObject;
             if (!rootObjectWrappers->TryGetValue(frameId, rootObject))
             {
+    #ifdef NETCOREAPP
+                rootObject = gcnew JavascriptRootObjectWrapper(browserId);
+    #else
                 rootObject = gcnew JavascriptRootObjectWrapper(browserId, browserWrapper->BrowserProcess);
+    #endif
                 rootObjectWrappers->TryAdd(frameId, rootObject);
             }
 
@@ -346,7 +360,7 @@ namespace Fluxonaut
                 }
                 else
                 {
-                    //TODO: Should be throw an exception here? It's likely that only a CefSharp developer would see this
+                    //TODO: Should be throw an exception here? It's likely that only a FluxonautBrowser developer would see this
                     // when they added a new message and haven't yet implemented the render process functionality.
                     throw gcnew Exception("Unsupported message type");
                 }
@@ -368,6 +382,7 @@ namespace Fluxonaut
             //these messages are roughly handled the same way
             if (name == kEvaluateJavascriptRequest || name == kJavascriptCallbackRequest)
             {
+                bool sendResponse = true;
                 bool success = false;
                 CefRefPtr<CefV8Value> result;
                 CefString errorMessage;
@@ -396,7 +411,11 @@ namespace Fluxonaut
                     //as without javascript there is no need for a context.
                     if (rootObjectWrapper == nullptr)
                     {
+    #ifdef NETCOREAPP
+                        rootObjectWrapper = gcnew JavascriptRootObjectWrapper(browser->GetIdentifier());
+    #else
                         rootObjectWrapper = gcnew JavascriptRootObjectWrapper(browser->GetIdentifier(), browserWrapper->BrowserProcess);
+    #endif
 
                         browserWrapper->JavascriptRootObjectWrappers->TryAdd(frameId, rootObjectWrapper);
                     }
@@ -421,8 +440,17 @@ namespace Fluxonaut
                                 //we need to do this here to be able to store the v8context
                                 if (success)
                                 {
-                                    auto responseArgList = response->GetArgumentList();
-                                    SerializeV8Object(result, responseArgList, 2, callbackRegistry);
+                                    //If the response is a string of CefSharpDefEvalScriptRes then
+                                    //we don't send the response, we'll let that happen when the promise has completed.
+                                    if (result->IsString() && result->GetStringValue() == "CefSharpDefEvalScriptRes")
+                                    {
+                                        sendResponse = false;
+                                    }
+                                    else
+                                    {
+                                        auto responseArgList = response->GetArgumentList();
+                                        SerializeV8Object(result, responseArgList, 2, callbackRegistry);
+                                    }
                                 }
                                 else
                                 {
@@ -509,14 +537,17 @@ namespace Fluxonaut
                     }
                 }
 
-                auto responseArgList = response->GetArgumentList();
-                responseArgList->SetBool(0, success);
-                SetInt64(responseArgList, 1, callbackId);
-                if (!success)
+                if (sendResponse)
                 {
-                    responseArgList->SetString(2, errorMessage);
+                    auto responseArgList = response->GetArgumentList();
+                    responseArgList->SetBool(0, success);
+                    SetInt64(responseArgList, 1, callbackId);
+                    if (!success)
+                    {
+                        responseArgList->SetString(2, errorMessage);
+                    }
+                    frame->SendProcessMessage(sourceProcessId, response);
                 }
-                frame->SendProcessMessage(sourceProcessId, response);
 
                 handled = true;
             }
@@ -544,7 +575,7 @@ namespace Fluxonaut
 
                     //Caching of JavascriptObjects
                     //TODO: JSB Should caching be configurable? On a per object basis?
-                    for each (JavascriptObject ^ obj in Enumerable::OfType<JavascriptObject^>(javascriptObjects))
+                    for each (JavascriptObject^ obj in Enumerable::OfType<JavascriptObject^>(javascriptObjects))
                     {
                         if (_javascriptObjects->ContainsKey(obj->JavascriptName))
                         {
@@ -687,31 +718,11 @@ namespace Fluxonaut
             return handled;
         };
 
-        void CefAppUnmanagedWrapper::OnRenderThreadCreated(CefRefPtr<CefListValue> extraInfo)
-        {
-            //Check to see if we have a list
-            if (extraInfo.get())
-            {
-                auto extensionList = extraInfo->GetList(0);
-                if (extensionList.get())
-                {
-                    for (size_t i = 0; i < extensionList->GetSize(); i++)
-                    {
-                        auto extension = extensionList->GetList(i);
-                        auto ext = gcnew V8Extension(StringUtils::ToClr(extension->GetString(0)), StringUtils::ToClr(extension->GetString(1)));
-
-                        _extensions->Add(ext);
-                    }
-                }
-            }
-        }
-
         void CefAppUnmanagedWrapper::OnWebKitInitialized()
         {
-            for each (V8Extension ^ extension in _extensions->AsReadOnly())
+            if (!Object::ReferenceEquals(_handler, nullptr))
             {
-                //only support extensions without handlers now
-                CefRegisterExtension(StringUtils::ToNative(extension->Name), StringUtils::ToNative(extension->JavascriptCode), NULL);
+                _handler->OnWebKitInitialized();
             }
         }
     }

@@ -16,10 +16,10 @@ BEGIN
         BLOCK "040904b0"
         BEGIN
             VALUE "FileDescription", "Fluxonaut.Browser.Core"
-            VALUE "FileVersion", "2.2.3"
+            VALUE "FileVersion", "2.3.0"
             VALUE "LegalCopyright", "Copyright © 2020 The Fluxonaut Authors"
             VALUE "ProductName", "FluxonautBrowser"
-            VALUE "ProductVersion", "2.2.3"
+            VALUE "ProductVersion", "2.3.0"
         END
     END
     BLOCK "VarFileInfo"

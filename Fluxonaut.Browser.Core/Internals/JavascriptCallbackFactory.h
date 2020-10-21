@@ -20,7 +20,7 @@ namespace Fluxonaut
                 {
                 }
 
-                property WeakReference^ BrowserAdapter;
+                property WeakReference<IBrowserAdapter^>^ BrowserAdapter;
 
                 virtual IJavascriptCallback^ Create(JavascriptCallback^ callback);
             };

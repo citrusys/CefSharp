@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Fluxonaut.Browser.Structs;
+using Range = Fluxonaut.Browser.Structs.Range;
 
 namespace Fluxonaut.Browser.Wpf.Internals
 {
@@ -16,8 +17,8 @@ namespace Fluxonaut.Browser.Wpf.Internals
     {
         // Black SkColor value for underline.
         public static uint ColorUNDERLINE = 0xFF000000;
-        // White SkColor value for background.
-        public static uint ColorBKCOLOR = 0xFFFFFFFF;
+        // Transparent SkColor value for background.
+        public static uint ColorBKCOLOR = 0x00000000;
 
         public static bool GetResult(IntPtr hwnd, uint lParam, out string text)
         {

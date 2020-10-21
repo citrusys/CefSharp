@@ -9,7 +9,7 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 
 
-namespace Fluxonaut.Browser.Internals
+namespace Fluxonaut.Browser.Wcf
 {
     public class BrowserProcessServiceHost : ServiceHost
     {

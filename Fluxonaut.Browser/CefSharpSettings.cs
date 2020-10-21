@@ -19,7 +19,9 @@ namespace Fluxonaut.Browser
         {
             ShutdownOnExit = true;
             LegacyJavascriptBindingEnabled = false;
+#if !NETCOREAPP
             WcfTimeout = TimeSpan.FromSeconds(2);
+#endif
             SubprocessExitIfParentProcessClosed = true;
         }
 
@@ -32,6 +34,7 @@ namespace Fluxonaut.Browser
         /// </summary>
         public static bool LegacyJavascriptBindingEnabled { get; set; }
 
+#if !NETCOREAPP
         /// <summary>
         /// WCF is used by RegisterJsObject feature for Javascript Binding
         /// It's reccomended that anyone developing a new application use 
@@ -46,6 +49,7 @@ namespace Fluxonaut.Browser
         /// will result on Abort() being called on the WCF Channel Host
         /// </summary>
         public static TimeSpan WcfTimeout { get; set; }
+#endif
 
         /// <summary>
         /// For the WinForms and WPF instances of ChromiumWebBrowser the relevant Application Exit event

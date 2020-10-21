@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Fluxonaut.Browser.BrowserSubprocess.netcore": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}

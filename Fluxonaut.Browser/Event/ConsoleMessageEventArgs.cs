@@ -15,6 +15,7 @@ namespace Fluxonaut.Browser
         /// <summary>
         /// Creates a new ConsoleMessageEventArgs event argument.
         /// </summary>
+        /// <param name="browser">browser</param>
         /// <param name="level">level</param>
         /// <param name="message">message</param>
         /// <param name="source">source</param>

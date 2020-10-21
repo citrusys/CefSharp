@@ -107,8 +107,8 @@ namespace Fluxonaut
                     bool get();
                 }
 
-                virtual void ImeSetComposition(String^ text, cli::array<CompositionUnderline>^ underlines, Nullable<Range> replacementRange, Nullable<Range> selectionRange);
-                virtual void ImeCommitText(String^ text, Nullable<Range> replacementRange, int relativeCursorPos);
+                virtual void ImeSetComposition(String^ text, cli::array<CompositionUnderline>^ underlines, Nullable<Fluxonaut::Browser::Structs::Range> replacementRange, Nullable<Fluxonaut::Browser::Structs::Range> selectionRange);
+                virtual void ImeCommitText(String^ text, Nullable<Fluxonaut::Browser::Structs::Range> replacementRange, int relativeCursorPos);
                 virtual void ImeFinishComposingText(bool keepSelection);
                 virtual void ImeCancelComposition();
 

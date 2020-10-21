@@ -70,7 +70,7 @@ namespace Fluxonaut
                 {
                     auto result = gcnew List<JavascriptObject^>();
                     auto subList = list->GetList(index);
-                    for (auto i = 0; i < subList->GetSize(); i++)
+                    for (size_t i = 0; i < subList->GetSize(); i++)
                     {
                         result->Add(DeserializeJsObject(subList, i));
                     }

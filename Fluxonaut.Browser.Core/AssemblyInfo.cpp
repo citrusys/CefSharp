@@ -12,6 +12,7 @@ using namespace System::Security::Permissions;
 using namespace Fluxonaut::Browser;
 
 [assembly:AssemblyTitle("Fluxonaut.Browser.Core")];
+[assembly:AssemblyDescription("FluxonautBrowser Core Library (VC++)")];
 [assembly:AssemblyCompany(AssemblyInfo::AssemblyCompany)];
 [assembly:AssemblyProduct(AssemblyInfo::AssemblyProduct)];
 [assembly:AssemblyCopyright(AssemblyInfo::AssemblyCopyright)];
@@ -20,7 +21,6 @@ using namespace Fluxonaut::Browser;
 [assembly:ComVisible(AssemblyInfo::ComVisible)];
 [assembly:CLSCompliant(AssemblyInfo::ClsCompliant)];
 
-[assembly:AssemblyDescription("")];
 [assembly:AssemblyConfiguration("")];
 [assembly:AssemblyTrademark("")];
 [assembly:AssemblyCulture("")];

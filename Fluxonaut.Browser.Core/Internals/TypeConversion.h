@@ -162,7 +162,9 @@ namespace Fluxonaut
                         {
                             auto key = StringUtils::ToNative(Convert::ToString(entry.Key));
                             auto entryValue = entry.Value;
-                            SerializeV8Object(cefDictionary, key, entryValue);
+                            //We don't pass a nameConverter here as the keys should
+                            //remain unchanged
+                            SerializeV8Object(cefDictionary, key, entryValue, nullptr);
                         }
 
                         cefValue->SetDictionary(cefDictionary);
@@ -175,7 +177,9 @@ namespace Fluxonaut
                         int i = 0;
                         for each (Object^ arrObj in enumerable)
                         {
-                            SerializeV8Object(cefList, i, arrObj);
+                            //We don't pass a nameConverter here as the keys should
+                            //remain unchanged
+                            SerializeV8Object(cefList, i, arrObj, nullptr);
 
                             i++;
                         }
@@ -239,7 +243,7 @@ namespace Fluxonaut
                     CefDictionaryValue::KeyList keys;
                     dictionary->GetKeys(keys);
 
-                    for (auto i = 0; i < keys.size(); i++)
+                    for (size_t i = 0; i < keys.size(); i++)
                     {
                         auto key = StringUtils::ToClr(keys[i]);
                         auto value = DeserializeObject(dictionary, keys[i], nullptr);
@@ -253,7 +257,7 @@ namespace Fluxonaut
                 static List<Object^>^ FromNative(const CefRefPtr<CefListValue>& list)
                 {
                     auto result = gcnew List<Object^>(list->GetSize());
-                    for (auto i = 0; i < list->GetSize(); i++)
+                    for (size_t i = 0; i < list->GetSize(); i++)
                     {
                         result->Add(DeserializeObject(list, i, nullptr));
                     }
@@ -288,6 +292,8 @@ namespace Fluxonaut
                         cookie->HttpOnly = cefCookie.httponly == 1;
                         cookie->Creation = ConvertCefTimeToDateTime(cefCookie.creation);
                         cookie->LastAccess = ConvertCefTimeToDateTime(cefCookie.last_access);
+                        cookie->SameSite = (Fluxonaut::Browser::Enums::CookieSameSite)cefCookie.same_site;
+                        cookie->Priority = (Fluxonaut::Browser::Enums::CookiePriority)cefCookie.priority;
 
                         if (cefCookie.has_expires)
                         {
@@ -301,7 +307,7 @@ namespace Fluxonaut
                 static NavigationEntry^ FromNative(const CefRefPtr<CefNavigationEntry> entry, bool current)
                 {
                     SslStatus^ sslStatus;
-                
+
                     if (!entry.get())
                     {
                         return nullptr;

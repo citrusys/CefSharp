@@ -6,6 +6,7 @@ using System;
 using Fluxonaut.Browser.Enums;
 using Fluxonaut.Browser.Structs;
 using Point = System.Drawing.Point;
+using Range = Fluxonaut.Browser.Structs.Range;
 using Size = System.Drawing.Size;
 
 namespace Fluxonaut.Browser.OffScreen
