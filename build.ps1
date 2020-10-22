@@ -278,14 +278,14 @@ function WriteAssemblyVersion
     $Filename = Join-Path $WorkingDir Fluxonaut.Browser\Properties\AssemblyInfo.cs
     $Regex = 'public const string AssemblyVersion = "(.*)"';
     $Regex2 = 'public const string AssemblyFileVersion = "(.*)"'
-    $Regex3 = 'public const string AssemblyCopyright = "Copyright © .* The Fluxonaut Authors"'
+    $Regex3 = 'public const string AssemblyCopyright = "Copyright © .* The CefSharp Authors"'
     
     $AssemblyInfo = Get-Content -Encoding UTF8 $Filename
     $CurrentYear = Get-Date -Format yyyy
     
     $NewString = $AssemblyInfo -replace $Regex, "public const string AssemblyVersion = ""$AssemblyVersion"""
     $NewString = $NewString -replace $Regex2, "public const string AssemblyFileVersion = ""$AssemblyVersion.0"""
-    $NewString = $NewString -replace $Regex3, "public const string AssemblyCopyright = ""Copyright © $CurrentYear The Fluxonaut Authors"""
+    $NewString = $NewString -replace $Regex3, "public const string AssemblyCopyright = ""Copyright © $CurrentYear The CefSharp Authors"""
     
     $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
     [System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)
@@ -308,7 +308,7 @@ function WriteVersionToResourceFile($resourceFile)
     $Filename = Join-Path $WorkingDir $resourceFile
     $Regex1 = 'VERSION .*';
     $Regex2 = 'Version", ".*?"';
-    $Regex3 = 'Copyright © .* The Fluxonaut Authors'
+    $Regex3 = 'Copyright © .* The CefSharp Authors'
     
     $ResourceData = Get-Content -Encoding UTF8 $Filename
     $CurrentYear = Get-Date -Format yyyy
@@ -317,7 +317,7 @@ function WriteVersionToResourceFile($resourceFile)
     
     $NewString = $ResourceData -replace $Regex1, "VERSION $CppAssemblyVersion"
     $NewString = $NewString -replace $Regex2, "Version"", ""$AssemblyVersion"""
-    $NewString = $NewString -replace $Regex3, "Copyright © $CurrentYear The Fluxonaut Authors"
+    $NewString = $NewString -replace $Regex3, "Copyright © $CurrentYear The CefSharp Authors"
     
     $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
     [System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)

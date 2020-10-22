@@ -24,11 +24,11 @@ namespace Fluxonaut.Browser
     {
         public const bool ClsCompliant = false;
         public const bool ComVisible = false;
-        public const string AssemblyCompany = "The Fluxonaut Authors";
+        public const string AssemblyCompany = "The CefSharp Authors Modified by Fluxonaut";
         public const string AssemblyProduct = "Fluxonaut Browser";
         public const string AssemblyVersion = "2.3.0";
         public const string AssemblyFileVersion = "2.3.0.0";
-        public const string AssemblyCopyright = "Copyright © 2020 The Fluxonaut Authors";
+        public const string AssemblyCopyright = "Copyright © 2020 The CefSharp Authors";
         public const string FluxonautBrowserCoreProject = "Fluxonaut.Browser.Core";
         public const string FluxonautBrowserBrowserSubprocessProject = "Fluxonaut.Browser.BrowserSubprocess";
         public const string FluxonautBrowserBrowserSubprocessCoreProject = "Fluxonaut.Browser.BrowserSubprocess.Core";
