@@ -3,7 +3,7 @@
     [Parameter(Position = 0)] 
     [string] $Target = "vs2019",
     [Parameter(Position = 1)]
-    [string] $Version = "2.4.0",
+    [string] $Version = "2.4.1",
     [Parameter(Position = 2)]
     [string] $AssemblyVersion = "2.4.0"
 )
