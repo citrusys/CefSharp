@@ -12,9 +12,9 @@ $WorkingDir = split-path -parent $MyInvocation.MyCommand.Definition
 $CefSln = Join-Path $WorkingDir 'Fluxonaut.Browser.netcore.sln'
 $nuget = Join-Path $WorkingDir .\nuget\NuGet.exe
 
-# Extract the current CEF Redist version from the Fluxonaut.Browser.Core\packages.config file
+# Extract the current CEF Redist version from the Fluxonaut.Browser.Core.Runtime\packages.config file
 # Save having to update this file manually Example 3.2704.1418
-$FluxonautBrowserCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'Fluxonaut.Browser.Core\packages.Fluxonaut.Browser.Core.netcore.config'))
+$FluxonautBrowserCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'Fluxonaut.Browser.Core.Runtime\packages.Fluxonaut.Browser.Core.Runtime.netcore.config'))
 $RedistVersion = $FluxonautBrowserCorePackagesXml.SelectSingleNode("//packages/package[@id='fluxonaut.browser.sdk']/@version").value
 
 function Write-Diagnostic 
@@ -169,7 +169,7 @@ function Compile
     Write-Diagnostic "Restore Nuget Packages"
 
     # Restore packages
-    . $nuget restore Fluxonaut.Browser.Core\packages.config -PackagesDirectory packages
+    . $nuget restore Fluxonaut.Browser.Core.Runtime\packages.Fluxonaut.Browser.Core.Runtime.netcore.config -PackagesDirectory packages
     . $nuget restore Fluxonaut.Browser.BrowserSubprocess.Core\packages.Fluxonaut.Browser.BrowserSubprocess.Core.netcore.config  -PackagesDirectory packages
     &msbuild /t:restore Fluxonaut.Browser.netcore.sln
     
@@ -288,6 +288,21 @@ function WriteVersionToAppveyor
     [System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)
 }
 
+function WriteVersionToNugetTargets
+{
+	$Filename = Join-Path $WorkingDir NuGet\PackageReference\Fluxonaut.Browser.Common.NETCore.targets
+
+	Write-Diagnostic  "Write Version ($RedistVersion) to $Filename"
+	$Regex1  = '" Version=".*"';
+	$Replace = '" Version="' + $RedistVersion + '"';
+
+	$RunTimeJsonData = Get-Content -Encoding UTF8 $Filename
+	$NewString = $RunTimeJsonData -replace $Regex1, $Replace
+
+	$Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+	[System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)
+}
+
 Write-Diagnostic "CEF Redist Version = $RedistVersion"
 
 DownloadNuget
@@ -295,12 +310,13 @@ DownloadNuget
 WriteAssemblyVersion
 WriteVersionToShfbproj
 WriteVersionToAppveyor
+WriteVersionToNugetTargets
 
 WriteVersionToManifest "Fluxonaut.Browser.BrowserSubprocess\app.manifest"
 WriteVersionToManifest "Fluxonaut.Browser.Wpf.Example\app.manifest"
 
 WriteVersionToResourceFile "Fluxonaut.Browser.BrowserSubprocess.Core\Resource.rc"
-WriteVersionToResourceFile "Fluxonaut.Browser.Core\Resource.rc"
+WriteVersionToResourceFile "Fluxonaut.Browser.Core.Runtime\Resource.rc"
 
 switch -Exact ($Target)
 {

@@ -1,71 +1,372 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Target Name="PlatformCheck" BeforeTargets="ResolveAssemblyReferences" Condition="(('$(Platform)' != 'x86') AND ('$(Platform)' != 'x64') AND ('$(Platform)' != 'Win32') AND '$(FluxonautBrowserAnyCpuSupport)' != 'true')">
-    <Error Text="$(MSBuildThisFileName) is unable to proceeed as your current Platform is '$(Platform)'. To target AnyCPU please read https://github.com/cefsharp/CefSharp/issues/1714. Alternatively change your Platform to x86 or x64 and the relevant files will be copied automatically. For details on changing your projects Platform see https://docs.microsoft.com/en-gb/visualstudio/ide/how-to-configure-projects-to-target-platforms?view=vs-2017" HelpKeyword="FluxonautSolutionPlatformCheck" />
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" TreatAsLocalProperty="FluxonautBrowserTransformXmlDllPath">
+  <!--
+  MSBuild is finding Fluxonaut.Browser.Core.Runtime.dll from the x86 folder and copying it to the bin folder which is a problem for AnyCPU
+  and when FluxonautBrowserTargetDir is used to move the files into a sub folder.
+  We manually remove Fluxonaut.Browser.Core.Runtime.dll from ReferenceCopyLocalPaths
+  https://thomasfreudenberg.com/archive/2012/11/21/dont-copy-my-referenced-assemblies/
+  -->
+  <Target Name="FluxonautBrowserExcludeCoreRuntimeAfterResolveAssemblyReferences" AfterTargets="ResolveAssemblyReferences" Condition="('$(FluxonautBrowserPlatformTarget)' == 'AnyCPU' OR '$(FluxonautBrowserTargetDir)' != '') AND $(TargetFrameworkVersion.StartsWith('v4.'))">
+    <ItemGroup>
+      <ReferenceCopyLocalPaths Remove="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.Core.Runtime.dll" />
+      <ReferenceCopyLocalPaths Remove="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.Core.Runtime.pdb" />
+      <ReferenceCopyLocalPaths Remove="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.Core.Runtime.xml" />
+    </ItemGroup>
   </Target>
-  
-  <Target Name="FrameworkVersionCheck" BeforeTargets="ResolveAssemblyReferences" Condition="(('$(TargetFrameworkVersion)' == 'v4.5.1') OR ('$(TargetFrameworkVersion)' == 'v4.5') OR ('$(TargetFrameworkVersion)' == 'v4.0'))">
-    <Error Text="Fluxonaut Browser requires .Net 4.5.2 or higher" />
+
+  <!--
+  For VS2017 when publishing x86/x64 there's Fluxonaut.Browser.Core.Runtime.dll references in both _DeploymentManifestDependencies and _DeploymentManifestFiles
+  This causes an Error occurred writing to hard disk exception, so we remove one (we leave the dependency and just remove the file reference.
+  -->
+  <Target Name="FluxonautBrowserExcludeCoreRuntimeBeforeGenerateApplicationManifest" BeforeTargets="GenerateApplicationManifest" Condition="'$(FluxonautBrowserPlatformTarget)' != 'AnyCPU' AND $(TargetFrameworkVersion.StartsWith('v4.'))">
+    <ItemGroup>
+      <_DeploymentManifestFiles Remove="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\$(PlatformTarget)\Fluxonaut.Browser.Core.Runtime.dll" />
+      <_DeploymentManifestFiles Remove="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\$(PlatformTarget)\Fluxonaut.Browser.Core.Runtime.pdb" />
+      <_DeploymentManifestFiles Remove="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\$(PlatformTarget)\Fluxonaut.Browser.Core.Runtime.xml" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+  For AnyCPU ClickOnce Publish Remove Fluxonaut.Browser.Core.Runtime.dll for being included in the bin folder
+  TODO: Publish AnyCPU still not working, requires some tweaking as Fluxonaut.Browser.dll file isn't being copied to the x64 folder.
+  -->
+  <Target Name="FluxonautBrowserAnyCPUExcludeCoreRuntimeBeforeGenerateApplicationManifest" BeforeTargets="GenerateApplicationManifest" Condition="'$(FluxonautBrowserPlatformTarget)' == 'AnyCPU' AND $(TargetFrameworkVersion.StartsWith('v4.'))">
+    <ItemGroup>
+      <_DeploymentManifestDependencies Remove="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.Core.Runtime.dll" />
+      <_DeploymentManifestDependencies Remove="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.Core.Runtime.pdb" />
+      <_DeploymentManifestDependencies Remove="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.Core.Runtime.xml" />
+    </ItemGroup>
+  </Target>
+
+
+  <!--
+  Add to project file for debugging purposes
+  <Target Name="FluxonautBrowserAfterBuildDebug" AfterTargets="AfterBuild">
+    <CallTarget Targets="FluxonautBrowserAfterBuildDiagnostic"/>
+  </Target> 
+  -->
+  <Target Name="FluxonautBrowserAfterBuildDiagnostic">
+    <Message Importance="high" Text="FluxonautBrowser After Build Diagnostic" />
+    <Message Importance="high" Text="FluxonautBrowserBuildAction = $(FluxonautBrowserBuildAction)" />
+    <Message Importance="high" Text="FluxonautBrowserTargetDir = $(FluxonautBrowserTargetDir)" />
+    <Message Importance="high" Text="FluxonautBrowserTargetDirAnyCpu32 = $(FluxonautBrowserTargetDirAnyCpu32)" />
+    <Message Importance="high" Text="FluxonautBrowserTargetDirAnyCpu64 = $(FluxonautBrowserTargetDirAnyCpu64)" />
+    <Message Importance="high" Text="RuntimeIdentifier = $(RuntimeIdentifier)" />
+    <Message Importance="high" Text="Platform = $(Platform)" />
+    <Message Importance="high" Text="PlatformName = $(PlatformName)" />
+    <Message Importance="high" Text="Platforms = $(Platforms)" />
+    <Message Importance="high" Text="PlatformTarget = $(PlatformTarget)" />
+    <Message Importance="high" Text="FluxonautBrowserPlatformTarget = $(FluxonautBrowserPlatformTarget)" />
+    <Message Importance="high" Text="PlatformTargetAsMSBuildArchitecture = $(PlatformTargetAsMSBuildArchitecture)" />
+    <Message Importance="high" Text="TargetFramework = $(TargetFramework)" />
+    <Message Importance="high" Text="TargetFrameworkVersion = $(TargetFrameworkVersion)" />
+    <Message Importance="high" Text="libcef.dll exists = $(OutDir)$(FluxonautBrowserTargetDir)libcef.dll" Condition="Exists('$(OutDir)$(FluxonautBrowserTargetDir)libcef.dll')" />
+    <Message Importance="high" Text="libcef.dll exists AnyCPU(x86) = $(OutDir)$(FluxonautBrowserTargetDirAnyCpu32)libcef.dll" Condition="Exists('$(OutDir)$(FluxonautBrowserTargetDirAnyCpu32)libcef.dll')" />
+    <Message Importance="high" Text="libcef.dll exists AnyCPU(x64) = $(OutDir)$(FluxonautBrowserTargetDirAnyCpu64)libcef.dll" Condition="Exists('$(OutDir)$(FluxonautBrowserTargetDirAnyCpu64)libcef.dll')" />
+    <Message Importance="high" Text="FluxonautBrowserTransformXmlDllPath = $(FluxonautBrowserTransformXmlDllPath)" />
+    <Message Importance="high" Text="NuGetProjectStyle = $(NuGetProjectStyle)" />
+    <Message Importance="high" Text="NuGetToolVersion = $(NuGetToolVersion)" />
+    <Message Importance="high" Text="OutputType = $(OutputType)" />
+    <Message Importance="high" Text="OutDir = $(OutDir)" />
+    <Message Importance="high" Text="Prefer32Bit = $(Prefer32Bit)" />
   </Target>
 
   <PropertyGroup>
-    <FluxonautBrowserTargetDir Condition=" '$(FluxonautBrowserTargetDir)' == '' ">.</FluxonautBrowserTargetDir>
+    <!--
+    Used for AnyCPU transforming of app.config
+    If https://www.nuget.org/packages/MSBuild.Microsoft.VisualStudio.Web.targets/ package is installed
+    we'll attempt to use the task from there, otherwise see if it's installed as part of Visual Studio
+    If not installed then we'll fallback to the old behaviour (user has to manage AnyCPU themselves)
+    -->
+    <FluxonautBrowserTransformXmlDllPath Condition="$(VSToolsPath) == ''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll</FluxonautBrowserTransformXmlDllPath>
+    <FluxonautBrowserTransformXmlDllPath Condition="$(VSToolsPath) != ''" >$(VSToolsPath)\Web\Microsoft.Web.Publishing.Tasks.dll</FluxonautBrowserTransformXmlDllPath>
   </PropertyGroup>
 
-  <ItemGroup Condition="('$(Platform)' == 'x86') OR ('$(Platform)' == 'Win32')">
-    <None Include="@(FluxonautRedist32)">
-      <Link>$(FluxonautBrowserTargetDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PublishState>Include</PublishState>
-      <Visible>false</Visible>
-    </None>
-    <None Include="@(FluxonautBrowserCommonBinaries32)">
-      <Link>$(FluxonautBrowserTargetDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PublishState>Include</PublishState>
-      <Visible>false</Visible>
-    </None>
-  </ItemGroup>
+  <PropertyGroup>
+    <!--
+    Allowable options are None, Content, NoAction.
+    None is the default (same as selecting the None Build Action in Visual Studio) for Nuget packages.config
+    Content is the default (same as selecting the None Build Action in Visual Studio) for Nuget PackageReference
+	  Technically the older Non-SDK Style project can use PackageReference under VS2019 (possibly VS2017 as well),
+	  so we use NuGetProjectStyle which is defined in the .nuget.g.props file for projects using PackageReference.
+	  For Library projects with Nuget supports buildTransitive we don't include our additional files and packages, the transitive reference should flow directly to the consuming projects.
+	  For class libraries that are often AnyCPU and consuming Exe/WinExe projects that are x64 or x86 the resulting build output
+	  is polluted with extra copies in sub folders.
+    -->
+    <FluxonautBrowserBuildAction Condition="'$(FluxonautBrowserBuildAction)' == '' AND '$(NuGetProjectStyle)' != 'PackageReference'">None</FluxonautBrowserBuildAction>
+    <FluxonautBrowserBuildAction Condition="'$(FluxonautBrowserBuildAction)' == '' AND '$(NuGetProjectStyle)' == 'PackageReference'">Content</FluxonautBrowserBuildAction>
+    <FluxonautBrowserBuildAction Condition="'$(FluxonautBrowserBuildAction)' == '' AND '$(NuGetProjectStyle)' == 'PackageReference' AND $(NuGetToolVersion) > '5.0' AND '$(OutputType)' == 'Library'">NoAction</FluxonautBrowserBuildAction>
 
-  <ItemGroup Condition="'$(Platform)' == 'x64'">
-    <None Include="@(FluxonautRedist64)">
-      <Link>$(FluxonautBrowserTargetDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PublishState>Include</PublishState>
-      <Visible>false</Visible>
-    </None>
-    <None Include="@(FluxonautBrowserCommonBinaries64)">
-      <Link>$(FluxonautBrowserTargetDir)\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PublishState>Include</PublishState>
-      <Visible>false</Visible>
-    </None>
-  </ItemGroup>
+    <FluxonautBrowserTargetDir Condition="'$(FluxonautBrowserTargetDir)' == ''"></FluxonautBrowserTargetDir>
+    <!-- Ideally we could use EnsureTrailingSlash, was only added on 2017 so unlikely supported in older version of VS -->
+    <FluxonautBrowserTargetDir Condition="'$(FluxonautBrowserTargetDir)' != '' AND !HasTrailingSlash('$(FluxonautBrowserTargetDir)')">$(FluxonautBrowserTargetDir)\</FluxonautBrowserTargetDir>
+    <FluxonautBrowserTargetDirAnyCpu32>$(FluxonautBrowserTargetDir)x86\</FluxonautBrowserTargetDirAnyCpu32>
+    <FluxonautBrowserTargetDirAnyCpu64>$(FluxonautBrowserTargetDir)x64\</FluxonautBrowserTargetDirAnyCpu64>
+    <!--
+	  For Sdk Projects the PlatformTarget is unreliable (https://github.com/dotnet/sdk/issues/1560)
+	  When our targets file is imported $(PlatformTarget) will be x86 when the Platform is infact AnyCPU.
+	  By time the AfterBuilds target runs it's correctly set to AnyCPU as the GetDefaultPlatformTargetForNetFramework
+	  Task correctly sets the build to AnyCPU, unfortunately it's too late. Previous attempt to hack around this failed,
+	  relying on user to manually specify $(PlatformTarget) until the SDK issue is fixed.
+    When AnyCPU and Prefer32Bit we just set the PlatformTarget to x86 (only when FluxonautBrowserAnyCpuSupport is empty)
+	  -->
+    <FluxonautBrowserPlatformTarget>$(PlatformTarget)</FluxonautBrowserPlatformTarget>
+    <FluxonautBrowserPlatformTarget Condition="'$(FluxonautBrowserPlatformTarget)' == 'AnyCPU' AND '$(Prefer32Bit)' == 'true' AND '$(FluxonautBrowserAnyCpuSupport)' == ''">x86</FluxonautBrowserPlatformTarget>
+    <FluxonautBrowserPlatformTarget Condition="'$(FluxonautBrowserPlatformTargetOverride)' != ''">$(FluxonautBrowserPlatformTargetOverride)</FluxonautBrowserPlatformTarget>
 
-  <ItemGroup Condition="'$(Platform)' == 'AnyCPU'">
-    <None Include="@(FluxonautRedist32)">
-      <Link>$(FluxonautBrowserTargetDir)\x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PublishState>Include</PublishState>
-      <Visible>false</Visible>
-    </None>
-    <None Include="@(FluxonautRedist64)">
-      <Link>$(FluxonautBrowserTargetDir)\x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PublishState>Include</PublishState>
-      <Visible>false</Visible>
-    </None>
-    <None Include="@(FluxonautBrowserCommonBinaries32)">
-      <Link>$(FluxonautBrowserTargetDir)\x86\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PublishState>Include</PublishState>
-      <Visible>false</Visible>
-    </None>
-    <None Include="@(FluxonautBrowserCommonBinaries64)">
-      <Link>$(FluxonautBrowserTargetDir)\x64\%(RecursiveDir)%(FileName)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <PublishState>Include</PublishState>
-      <Visible>false</Visible>
-    </None>
-  </ItemGroup>
+  </PropertyGroup>
+
+  <Choose>
+    <!--
+    For .Net Core/Net5 when there's no runtime identifier specified then our lib files will be in the runtimes folders
+    we copy our unmanaged resources into the sub folder when required
+    -->
+    <When Condition="'$(RuntimeIdentifier)' == '' AND ($(TargetFramework.StartsWith('netcoreapp3')) OR $(TargetFramework.StartsWith('net5')))">
+      <Choose>
+        <When Condition="'$(FluxonautBrowserPlatformTarget)' == 'x64'">
+          <PropertyGroup>
+            <FluxonautBrowserTargetDir>runtimes\win-x64\lib\netcoreapp3.0\</FluxonautBrowserTargetDir>
+            </PropertyGroup>
+        </When>
+        <When Condition="'$(FluxonautBrowserPlatformTarget)' == 'x86'">
+          <PropertyGroup>
+            <FluxonautBrowserTargetDir>runtimes\win-x86\lib\netcoreapp3.0\</FluxonautBrowserTargetDir>
+            </PropertyGroup>
+        </When>
+        <When Condition="'$(FluxonautBrowserPlatformTarget)' == 'AnyCPU'">
+          <PropertyGroup>
+            <FluxonautBrowserTargetDirAnyCpu32>runtimes\win-x86\lib\netcoreapp3.0\</FluxonautBrowserTargetDirAnyCpu32>
+            <FluxonautBrowserTargetDirAnyCpu64>runtimes\win-x64\lib\netcoreapp3.0\</FluxonautBrowserTargetDirAnyCpu64>
+            </PropertyGroup>
+        </When>
+        </Choose>	  
+    </When>
+    <!--
+	  When FluxonautBrowserTargetDir is specified for x86/x64 platforms the files are included in a sub directory, 
+	  The Fluxonaut.Browser.dll file required by the BrowserSubProcess isn't copied by default and won't start, so we include an extra
+	  copy.
+	  -->
+    <When Condition="'$(FluxonautBrowserTargetDir)' != '' AND $(TargetFrameworkVersion.StartsWith('v4.')) AND '$(TargetFrameworkVersion)' != 'AnyCPU'">
+      <Choose>
+        <When Condition="'$(FluxonautBrowserBuildAction)' == 'None'">
+          <ItemGroup>
+            <None Include="@(FluxonautBrowserCommonManagedDll)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+          </ItemGroup>
+        </When>
+        <When Condition="'$(FluxonautBrowserBuildAction)' == 'Content'">
+          <ItemGroup>
+            <Content Include="@(FluxonautBrowserCommonManagedDll)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+          </ItemGroup>
+        </When>
+      </Choose>
+    </When>
+  </Choose>
+
+  <Choose>
+    <When Condition="'$(FluxonautBrowserBuildAction)' == 'None'">
+      <Choose>
+        <When Condition="'$(TargetFrameworkVersion)' == 'x64'">
+          <ItemGroup>
+            <None Include="@(FluxonautRedist64)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+            <None Include="@(FluxonautBrowserCommonBinaries64)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+          </ItemGroup>
+        </When>
+        <When Condition="'$(TargetFrameworkVersion)' == 'AnyCPU'">
+          <ItemGroup>
+            <None Include="@(FluxonautRedist32)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu32)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+            <None Include="@(FluxonautRedist64)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu64)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+            <None Include="@(FluxonautBrowserCommonBinaries32)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu32)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+            <None Include="@(FluxonautBrowserCommonBinaries64)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu64)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+            <!--
+            Include Fluxonaut.Browser.dll and Fluxonaut.Browser.Core.dll (we only need Fluxonaut.Browser.dll but it's easier to include both)
+            in the arch specific folders as required by the BrowserSubProcess.
+            -->
+            <None Include="@(FluxonautBrowserCommonManagedDll)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu32)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+            <None Include="@(FluxonautBrowserCommonManagedDll)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu64)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+          </ItemGroup>
+        </When>
+        <!-- x86 and Win32-->
+        <Otherwise>
+          <ItemGroup>
+            <None Include="@(FluxonautRedist32)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+            <None Include="@(FluxonautBrowserCommonBinaries32)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </None>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+    <When Condition="'$(FluxonautBrowserBuildAction)' == 'Content'">
+      <Choose>
+        <When Condition="'$(TargetFrameworkVersion)' == 'x64'">
+          <ItemGroup>
+            <Content Include="@(FluxonautRedist64)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+            <Content Include="@(FluxonautBrowserCommonBinaries64)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+          </ItemGroup>
+        </When>
+        <When Condition="'$(TargetFrameworkVersion)' == 'AnyCPU'">
+          <ItemGroup>
+            <Content Include="@(FluxonautRedist32)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu32)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+            <Content Include="@(FluxonautRedist64)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu64)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+            <Content Include="@(FluxonautBrowserCommonBinaries32)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu32)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+            <Content Include="@(FluxonautBrowserCommonBinaries64)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu64)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+            <!--
+            Include Fluxonaut.Browser.dll and Fluxonaut.Browser.Core.dll (we only need Fluxonaut.Browser.dll but it's easier to include both)
+            in the arch specific folders as required by the BrowserSubProcess.
+            -->
+            <Content Include="@(FluxonautBrowserCommonManagedDll)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu32)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+            <Content Include="@(FluxonautBrowserCommonManagedDll)">
+              <Link>$(FluxonautBrowserTargetDirAnyCpu64)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+          </ItemGroup>
+        </When>
+        <!-- x86 and Win32-->
+        <Otherwise>
+          <ItemGroup>
+            <Content Include="@(FluxonautRedist32)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+            <Content Include="@(FluxonautBrowserCommonBinaries32)">
+              <Link>$(FluxonautBrowserTargetDir)%(RecursiveDir)%(FileName)%(Extension)</Link>
+              <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+              <PublishState>Included</PublishState>
+              <Visible>false</Visible>
+            </Content>
+          </ItemGroup>
+        </Otherwise>
+      </Choose>
+    </When>
+  </Choose>
+
+  <!--
+  For AnyCPU we use a Transform to add entries to app.config if possible
+  Otherwise throw error to alert user they need to perform additional action
+  --> 
+  <UsingTask TaskName="TransformXml" AssemblyFile="$(FluxonautBrowserTransformXmlDllPath)" Condition="Exists('$(FluxonautBrowserTransformXmlDllPath)') AND '$(TargetFrameworkVersion)' == 'AnyCPU' AND '$(FluxonautBrowserAnyCpuSupport)' == '' AND '$(FluxonautBrowserBuildAction)' != 'NoAction'" />
+
+  <Target Name="FluxonautBrowserCommonAnyCPUConfigTransform" AfterTargets="_CopyAppConfigFile" Condition="'@(AppConfigWithTargetPath)' != '' AND Exists('$(FluxonautBrowserTransformXmlDllPath)') AND '$(TargetFrameworkVersion)' == 'AnyCPU' AND '$(FluxonautBrowserAnyCpuSupport)' == '' AND '$(FluxonautBrowserBuildAction)' != 'NoAction'">
+    <TransformXml Source="@(AppConfigWithTargetPath->'$(OutDir)%(TargetPath)')" Transform="$(MSBuildThisFileDirectory)..\build\app.config.x86.transform" Destination="@(AppConfigWithTargetPath->'$(OutDir)%(TargetPath)')"/>
+    <TransformXml Source="@(AppConfigWithTargetPath->'$(OutDir)%(TargetPath)')" Transform="$(MSBuildThisFileDirectory)..\build\app.config.x64.transform" Destination="@(AppConfigWithTargetPath->'$(OutDir)%(TargetPath)')"/>
+  </Target>
+
+  <Target Name="FluxonautBrowserPlatformCheck" BeforeTargets="ResolveAssemblyReferences" Condition="('@(AppConfigWithTargetPath)' == '' OR !Exists('$(FluxonautBrowserTransformXmlDllPath)')) AND '$(TargetFrameworkVersion)' == 'AnyCPU' AND '$(FluxonautBrowserAnyCpuSupport)' != 'true' AND '$(FluxonautBrowserBuildAction)' != 'NoAction'">
+	  <Error Text="$(MSBuildThisFileName) is unable to proceeed as your current PlatformTarget is '$(TargetFrameworkVersion)'. To target AnyCPU please read https://github.com/cefsharp/CefSharp/issues/1714. Alternatively change your PlatformTarget to x86 or x64 and the relevant files will be copied automatically." HelpKeyword="FluxonautBrowserSolutionPlatformCheck" />
+  </Target>
+
+  <!--
+  Issue https://github.com/dotnet/project-system/issues/4158
+  The None/Content entries aren't picked up as the .targets file doesn't exist before the Nuget restore (only when using packages.config)
+  So in that scenario we display a message to the user. Close/reopen the project and the None/Content entries will work as above.
+  I have attempted to copy the files via a Copy Task, unfortunately the .props entries aren't accessible either so that's not feasible.
+  -->
+  <Target Name="FluxonautBrowserCopyFilesAfterNugetRestore32" AfterTargets="AfterBuild" Condition="'$(NuGetProjectStyle)' != 'PackageReference' AND !Exists('$(OutDir)$(FluxonautBrowserTargetDir)libcef.dll') AND '$(FluxonautBrowserBuildAction)' != 'NoAction' AND '$(TargetFrameworkVersion)' == 'x86'">
+    <Message Importance="high" Text="FluxonautBrowser - Files were not copied by MSBuild after Nuget install/restore! Please close and re-open $(MSBuildProjectFile)." />
+  </Target>
+
+  <Target Name="FluxonautBrowserCopyFilesAfterNugetRestore64" AfterTargets="AfterBuild" Condition="'$(NuGetProjectStyle)' != 'PackageReference' AND !Exists('$(OutDir)$(FluxonautBrowserTargetDir)libcef.dll') AND '$(FluxonautBrowserBuildAction)' != 'NoAction' AND '$(TargetFrameworkVersion)' == 'x64'">
+    <Message Importance="high" Text="FluxonautBrowser - Files were not copied by MSBuild after Nuget install/restore! Please close and re-open $(MSBuildProjectFile)." />
+  </Target>
+
+  <Target Name="FluxonautBrowserCopyFilesAfterNugetRestoreAnyCPU" AfterTargets="AfterBuild" Condition="'$(NuGetProjectStyle)' != 'PackageReference' AND !Exists('$(OutDir)$(FluxonautBrowserTargetDirAnyCpu32)libcef.dll') AND '$(FluxonautBrowserBuildAction)' != 'NoAction' AND '$(TargetFrameworkVersion)' == 'AnyCPU'">
+    <Message Importance="high" Text="FluxonautBrowser - Files were not copied by MSBuild after Nuget install/restore! Please close and re-open $(MSBuildProjectFile)." />
+  </Target>
 </Project>

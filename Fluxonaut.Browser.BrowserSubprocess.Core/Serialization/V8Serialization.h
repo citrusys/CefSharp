@@ -5,12 +5,15 @@
 #pragma once
 
 #include "include/cef_v8.h"
+#include "JavascriptCallbackRegistry.h"
+
+using namespace Fluxonaut::Browser::Internals;
 
 namespace Fluxonaut
 {
     namespace Browser
     {
-        namespace Internals
+        namespace BrowserSubprocess
         {
             ref class JavascriptCallbackRegistry;
 

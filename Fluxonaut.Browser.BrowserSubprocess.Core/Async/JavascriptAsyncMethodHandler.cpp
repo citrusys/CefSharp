@@ -4,19 +4,20 @@
 
 #include "stdafx.h"
 #include "JavascriptAsyncMethodHandler.h"
-#include "../Fluxonaut.Browser.Core/Internals/Messaging/Messages.h"
-#include "../Fluxonaut.Browser.Core/Internals/Serialization/Primitives.h"
+#include "../Fluxonaut.Browser.Core.Runtime/Internals/Messaging/Messages.h"
+#include "../Fluxonaut.Browser.Core.Runtime/Internals/Serialization/Primitives.h"
 #include "Serialization/V8Serialization.h"
 #include "CefAppUnmanagedWrapper.h"
 
 using namespace Fluxonaut::Browser::Internals::Messaging;
 using namespace Fluxonaut::Browser::Internals::Serialization;
+using namespace Fluxonaut::Browser::BrowserSubprocess::Serialization;
 
 namespace Fluxonaut
 {
     namespace Browser
     {
-        namespace Internals
+        namespace BrowserSubprocess
         {
             namespace Async
             {

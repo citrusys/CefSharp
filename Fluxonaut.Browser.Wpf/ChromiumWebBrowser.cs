@@ -81,7 +81,7 @@ namespace Fluxonaut.Browser.Wpf
         /// <summary>
         /// The managed cef browser adapter
         /// </summary>
-        private ManagedCefBrowserAdapter managedCefBrowserAdapter;
+        private IBrowserAdapter managedCefBrowserAdapter;
         /// <summary>
         /// The ignore URI change
         /// </summary>
@@ -179,7 +179,7 @@ namespace Fluxonaut.Browser.Wpf
                 //New instance is created in the constructor, if you use
                 //xaml to initialize browser settings then it will also create a new
                 //instance, so we dispose of the old one
-                if (browserSettings != null && browserSettings.FrameworkCreated)
+                if (browserSettings != null && browserSettings.AutoDispose)
                 {
                     browserSettings.Dispose();
                 }
@@ -201,9 +201,9 @@ namespace Fluxonaut.Browser.Wpf
                     throw new Exception("Browser has already been created. RequestContext must be " +
                                         "set before the underlying CEF browser is created.");
                 }
-                if (value != null && value.GetType() != typeof(RequestContext))
+                if (value != null && !Core.ObjectFactory.RequestContextType.IsAssignableFrom(value.UnWrap().GetType()))
                 {
-                    throw new Exception(string.Format("RequestContext can only be of type {0} or null", typeof(RequestContext)));
+                    throw new Exception(string.Format("RequestContext can only be of type {0} or null", Core.ObjectFactory.RequestContextType));
                 }
                 requestContext = value;
             }
@@ -500,7 +500,7 @@ namespace Fluxonaut.Browser.Wpf
 
                 if (!Cef.Initialize(settings))
                 {
-                    throw new InvalidOperationException("Cef::Initialize() failed");
+                    throw new InvalidOperationException(CefInitializeFailedErrorMessage);
                 }
             }
 
@@ -550,10 +550,9 @@ namespace Fluxonaut.Browser.Wpf
             UndoCommand = new DelegateCommand(this.Undo);
             RedoCommand = new DelegateCommand(this.Redo);
 
-            managedCefBrowserAdapter = new ManagedCefBrowserAdapter(this, true);
+            managedCefBrowserAdapter = ManagedCefBrowserAdapter.Create(this, true);
 
-            browserSettings = new BrowserSettings(frameworkCreated: true);
-            RenderHandler = new InteropBitmapRenderHandler();
+            browserSettings = Core.ObjectFactory.CreateBrowserSettings(autoDispose: true);
 
             WpfKeyboardHandler = new WpfKeyboardHandler(this);
 
@@ -1068,6 +1067,11 @@ namespace Fluxonaut.Browser.Wpf
         /// <param name="browser">The browser.</param>
         void IWebBrowserInternal.OnAfterBrowserCreated(IBrowser browser)
         {
+            if (IsDisposed || browser.IsDisposed)
+            {
+                return;
+            }
+
             Interlocked.Exchange(ref browserInitialized, 1);
             this.browser = browser;
 
@@ -1582,7 +1586,7 @@ namespace Fluxonaut.Browser.Wpf
 
                 //DoDragDrop will fire this handler for internally sourced Drag/Drop operations
                 //we use the existing IDragData (cloned copy)
-                var dragData = currentDragData ?? e.GetDragDataWrapper();
+                var dragData = currentDragData ?? e.GetDragData();
 
                 browser.GetHost().DragTargetDragEnter(dragData, mouseEvent, effect);
                 browser.GetHost().DragTargetDragOver(mouseEvent, effect);
@@ -1750,10 +1754,10 @@ namespace Fluxonaut.Browser.Wpf
                 var windowInfo = CreateOffscreenBrowserWindowInfo(source == null ? IntPtr.Zero : source.Handle);
                 //Pass null in for Address and rely on Load being called in OnAfterBrowserCreated
                 //Workaround for issue https://github.com/cefsharp/CefSharp/issues/2300
-                managedCefBrowserAdapter.CreateBrowser(windowInfo, browserSettings as BrowserSettings, requestContext as RequestContext, address: initialAddress);
+                managedCefBrowserAdapter.CreateBrowser(windowInfo, browserSettings, requestContext, address: initialAddress);
 
                 //Dispose of BrowserSettings if we created it, if user created then they're responsible
-                if (browserSettings.FrameworkCreated)
+                if (browserSettings.AutoDispose)
                 {
                     browserSettings.Dispose();
                 }
@@ -1774,7 +1778,7 @@ namespace Fluxonaut.Browser.Wpf
         /// <returns>Window Info</returns>
         protected virtual IWindowInfo CreateOffscreenBrowserWindowInfo(IntPtr handle)
         {
-            var windowInfo = new WindowInfo();
+            var windowInfo = Core.ObjectFactory.CreateWindowInfo();
             windowInfo.SetAsWindowless(handle);
             return windowInfo;
         }
@@ -2439,29 +2443,26 @@ namespace Fluxonaut.Browser.Wpf
                 browser.GetHost().NotifyScreenInfoChanged();
             }
 
-            //Ignore this for custom bitmap factories                   
-            if (RenderHandler is WritableBitmapRenderHandler || RenderHandler is InteropBitmapRenderHandler || RenderHandler is DirectWritableBitmapRenderHandler)
+            //If the user has specified a custom RenderHandler then we'll skip this part
+            //as to not override their implementation.
+            //TODO: Add support for RenderHandler changing the DPI rather
+            //than creating a new instance (allow users to be notified of DPI change).
+            if (RenderHandler == null || RenderHandler is WritableBitmapRenderHandler || RenderHandler is DirectWritableBitmapRenderHandler)
             {
-                if (Cef.CurrentlyOnThread(CefThreadIds.TID_UI) && !(RenderHandler is DirectWritableBitmapRenderHandler))
+                const int DefaultDpi = 96;
+                var scale = DefaultDpi * DpiScaleFactor;
+                var oldRenderHandler = RenderHandler;
+
+                if (Cef.CurrentlyOnThread(CefThreadIds.TID_UI))
                 {
-                    const int DefaultDpi = 96;
-                    var scale = DefaultDpi * DpiScaleFactor;
                     RenderHandler = new DirectWritableBitmapRenderHandler(scale, scale, invalidateDirtyRect: true);
                 }
                 else
                 {
-                    if (DpiScaleFactor > 1.0 && !(RenderHandler is WritableBitmapRenderHandler))
-                    {
-                        const int DefaultDpi = 96;
-                        var scale = DefaultDpi * DpiScaleFactor;
-
-                        RenderHandler = new WritableBitmapRenderHandler(scale, scale);
-                    }
-                    else if (DpiScaleFactor == 1.0 && !(RenderHandler is InteropBitmapRenderHandler))
-                    {
-                        RenderHandler = new InteropBitmapRenderHandler();
-                    }
+                    RenderHandler = new WritableBitmapRenderHandler(scale, scale);
                 }
+
+                oldRenderHandler?.Dispose();
             }
         }
 

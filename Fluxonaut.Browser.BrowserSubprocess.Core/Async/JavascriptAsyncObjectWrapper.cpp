@@ -13,7 +13,7 @@ namespace Fluxonaut
 {
     namespace Browser
     {
-        namespace Internals
+        namespace BrowserSubprocess
         {
             namespace Async
             {

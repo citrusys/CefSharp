@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\fluxonaut.browser.sdk.2.3.0\build\fluxonaut.browser.sdk.props" Condition="Exists('..\packages\fluxonaut.browser.sdk.2.3.0\build\fluxonaut.browser.sdk.props')" />
+  <Import Project="..\packages\fluxonaut.browser.sdk.2.4.0\build\fluxonaut.browser.sdk.props" Condition="Exists('..\packages\fluxonaut.browser.sdk.2.4.0\build\fluxonaut.browser.sdk.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -163,11 +163,11 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\MCefRefPtr.h" />
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\ReportUnhandledExceptions.h" />
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\Serialization\ObjectsSerialization.h" />
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\Serialization\Primitives.h" />
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\StringUtils.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\MCefRefPtr.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\ReportUnhandledExceptions.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\Serialization\ObjectsSerialization.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\Serialization\Primitives.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\StringUtils.h" />
     <ClInclude Include="BindObjectAsyncHandler.h" />
     <ClCompile Include="BrowserSubprocessExecutable.h" />
     <ClInclude Include="Cef.h" />
@@ -204,8 +204,8 @@
     <ClInclude Include="vcclr_local.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Fluxonaut.Browser.Core\Internals\Serialization\ObjectsSerialization.cpp" />
-    <ClCompile Include="..\Fluxonaut.Browser.Core\Internals\Serialization\Primitives.cpp" />
+    <ClCompile Include="..\Fluxonaut.Browser.Core.Runtime\Internals\Serialization\ObjectsSerialization.cpp" />
+    <ClCompile Include="..\Fluxonaut.Browser.Core.Runtime\Internals\Serialization\Primitives.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Async\JavascriptAsyncMethodCallback.cpp" />
     <ClCompile Include="Async\JavascriptAsyncMethodHandler.cpp" />
@@ -240,8 +240,15 @@
     <ResourceCompile Include="Resource.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="packages.Fluxonaut.Browser.BrowserSubprocess.Core.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\fluxonaut.browser.sdk.2.4.0\build\fluxonaut.browser.sdk.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\fluxonaut.browser.sdk.2.4.0\build\fluxonaut.browser.sdk.props'))" />
+  </Target>
 </Project>

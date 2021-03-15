@@ -30,6 +30,7 @@ namespace Fluxonaut.Browser.Web
         {
             this.base64Encode = base64Encode;
             this.html = html;
+            this.charSet = charSet;
         }
 
         /// <summary>

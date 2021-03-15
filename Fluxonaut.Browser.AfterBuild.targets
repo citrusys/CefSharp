@@ -10,9 +10,9 @@
   <Target Name="FluxonautBrowserCopyBrowserSubprocess" AfterTargets="AfterBuild">
     <ItemGroup>
       <!-- We only need the .exe and .pdb but I don't know how to express that easily with MSBuild... -->
-      <SubProcessFiles Include="$(SolutionDir)Fluxonaut.Browser.BrowserSubprocess\bin.netcore\$(Configuration)\$(TargetFramework)\Fluxonaut.Browser.BrowserSubprocess.*" />
+      <SubProcessFiles Include="$(SolutionDir)Fluxonaut.Browser.BrowserSubprocess\bin.netcore\$(Platform)\$(Configuration)\$(TargetFramework)\Fluxonaut.Browser.BrowserSubprocess.*" />
     </ItemGroup>
-    <Message Importance="high" Text="Copying $(SolutionDir)Fluxonaut.Browser.BrowserSubprocess\bin.netcore\$(Configuration)\$(TargetFramework)\Fluxonaut.Browser.BrowserSubprocess.* to $(TargetDir)" />
+    <Message Importance="high" Text="Copying $(SolutionDir)Fluxonaut.Browser.BrowserSubprocess\bin.netcore\$(Platform)\$(Configuration)\$(TargetFramework)\Fluxonaut.Browser.BrowserSubprocess.* to $(TargetDir)" />
     <Copy SourceFiles="@(SubProcessFiles)" DestinationFolder="$(TargetDir)" />
   </Target>
 

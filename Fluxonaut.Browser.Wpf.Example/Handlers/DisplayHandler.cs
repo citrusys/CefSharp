@@ -2,8 +2,10 @@
 //
 // Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
 
+using Fluxonaut.Browser.Structs;
+using System;
 using System.Collections.Generic;
-
+using CursorType = Fluxonaut.Browser.Enums.CursorType;
 using Size = Fluxonaut.Browser.Structs.Size;
 
 namespace Fluxonaut.Browser.Wpf.Example.Handlers
@@ -17,6 +19,11 @@ namespace Fluxonaut.Browser.Wpf.Example.Handlers
         }
 
         bool IDisplayHandler.OnAutoResize(IWebBrowser chromiumWebBrowser, IBrowser browser, Size newSize)
+        {
+            return false;
+        }
+
+        bool IDisplayHandler.OnCursorChange(IWebBrowser chromiumWebBrowser, IBrowser browser, IntPtr cursor, CursorType type, CursorInfo customCursorInfo)
         {
             return false;
         }

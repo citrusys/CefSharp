@@ -15,13 +15,18 @@
     <AssemblyName>Fluxonaut.Browser</AssemblyName>
     <DocumentationFile>$(BaseOutputPath)$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <SignAssembly>true</SignAssembly>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <EmbedAllSources>True</EmbedAllSources>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="5.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- Don't include items from the "bin" and "obj" folders used by the .NET Framework projects. -->
@@ -34,6 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="DevTools\DevToolsClient.Generated.cs" />
     <Compile Remove="Internals\Partial\ChromiumWebBrowser.Partial.cs" />
   </ItemGroup>
 

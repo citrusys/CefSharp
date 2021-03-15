@@ -12,6 +12,28 @@ namespace Fluxonaut.Browser.DevTools
 {
     public abstract class DevToolsDomainBase
     {
+#if NETCOREAPP
+        protected string EnumToString(Enum val)
+        {
+            return Internals.Json.JsonEnumConverterFactory.ConvertEnumToString(val);
+        }
+
+        protected IEnumerable<string> EnumToString(CefSharp.DevTools.Emulation.DisabledImageType[] values)
+        {
+            foreach (var val in values)
+            {
+                yield return Internals.Json.JsonEnumConverterFactory.ConvertEnumToString(val);
+            }
+        }
+
+        protected IEnumerable<string> EnumToString(PermissionType[] values)
+        {
+            foreach (var val in values)
+            {
+                yield return Internals.Json.JsonEnumConverterFactory.ConvertEnumToString(val);
+            }
+        }
+#else
         protected string EnumToString(Enum val)
         {
             var memInfo = val.GetType().GetMember(val.ToString());
@@ -31,6 +53,17 @@ namespace Fluxonaut.Browser.DevTools
             }
         }
 
+        protected IEnumerable<string> EnumToString(Fluxonaut.Browser.DevTools.Emulation.DisabledImageType[] values)
+        {
+            foreach (var val in values)
+            {
+                var memInfo = val.GetType().GetMember(val.ToString());
+                var dataMemberAttribute = (EnumMemberAttribute)Attribute.GetCustomAttribute(memInfo[0], typeof(EnumMemberAttribute), false);
+
+                yield return dataMemberAttribute.Value;
+            }
+        }
+#endif
         protected string ToBase64String(byte[] bytes)
         {
             return Convert.ToBase64String(bytes);

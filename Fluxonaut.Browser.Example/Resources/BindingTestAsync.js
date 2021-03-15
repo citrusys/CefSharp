@@ -1,182 +1,94 @@
-(async () =>
+QUnit.module('BindingTestAsync', (hooks) =>
 {
-    // Verify that two objects are completely equal
-    function deepEqual(x, y)
+    hooks.before(async () =>
     {
-        if ((typeof x == "object" && x != null) && (typeof y == "object" && y != null))
-        {
-            for (var prop in x)
-            {
-                if (prop in y && (Object.keys(x).length === Object.keys(y).length))
-                {
-                    return deepEqual(x[prop], y[prop]);
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
-        else
-        {
-            return x === y;
-        }
-    }
-
-    await FluxonautBrowser.BindObjectAsync("boundAsync");
-
-    QUnit.test("BindObjectAsync Second call with boundAsync param", function (assert)
-    {
-        let asyncCallback = assert.async();
-        FluxonautBrowser.BindObjectAsync("boundAsync").then(function (res)
-        {
-            assert.equal(res.Success, false, "Second call to BindObjectAsync with already bound objects as params returned false.");
-            asyncCallback();
-        });
+        await FluxonautBrowser.BindObjectAsync("boundAsync");
     });
 
-    QUnit.test("Async call (Throw .Net Exception)", function (assert)
+    QUnit.test("BindObjectAsync Second call with boundAsync param", async (assert) =>
     {
-        var asyncCallback = assert.async();
-
-        boundAsync.error().catch(function (e)
-        {
-            assert.ok(true, "Error: " + e);
-
-            asyncCallback();
-        });
+        const res = await FluxonautBrowser.BindObjectAsync("boundAsync");
+        assert.equal(res.Success, false, "Second call to BindObjectAsync with already bound objects as params returned false.");
     });
 
-    QUnit.test("Async call (Divide 16 / 2):", function (assert)
+    QUnit.test("Async call (Throw .Net Exception)", async (assert) =>
     {
-        var asyncCallback = assert.async();
-
-        boundAsync.div(16, 2).then(function (actualResult)
-        {
-            const expectedResult = 8
-
-            assert.equal(expectedResult, actualResult, "Divide 16 / 2 resulted in " + expectedResult);
-
-            asyncCallback();
-        });
+        assert.rejects(boundAsync.error());
     });
 
-    QUnit.test("Async call (Divide 16 /0)", function (assert)
+    QUnit.test("Async call (Divide 16 / 2):", async (assert) =>
     {
-        var asyncCallback = assert.async();
-
-        boundAsync.div(16, 0).then(function (res)
-        {
-            //Will always throw exception
-        },
-            function (e)
-            {
-                assert.ok(true, "Error: " + e + "(" + Date() + ")");
-
-                asyncCallback();
-            });
+        const actualResult = await boundAsync.div(16, 2);
+        const expectedResult = 8;
+        assert.equal(expectedResult, actualResult, "Divide 16 / 2");
     });
 
-    QUnit.test("Async call (UIntAddModel 3 + 2):", function (assert)
-    {
-        var asyncCallback = assert.async();
-
-        boundAsync.uIntAddModel({ ParamA: 3, ParamB: 2 }).then(function (actualResult)
-        {
-            const expectedResult = 5
-
-            assert.equal(expectedResult, actualResult, "Add 3 + 2 resulted in " + expectedResult);
-
-            asyncCallback();
-        });
+    QUnit.test("Async call (Div with Blocking Task 16 / 2):", async (assert) => {
+        const actualResult = await boundAsync.divWithBlockingTaskCall(16, 2);
+        const expectedResult = 8;
+        assert.equal(expectedResult, actualResult, "Divide 16 / 2");
     });
 
-    QUnit.test("Async call (UIntAdd 3 + 2):", function (assert)
-    {
-        var asyncCallback = assert.async();
-
-        boundAsync.uIntAdd(3, 2).then(function (actualResult)
-        {
-            const expectedResult = 5
-
-            assert.equal(expectedResult, actualResult, "Add 3 + 2 resulted in " + expectedResult);
-
-            asyncCallback();
-        });
+    QUnit.test("Async call (Divide 16 /0)", async (assert) => {
+        assert.rejects(boundAsync.div(16, 0));
     });
 
-    QUnit.test("Async call (Hello):", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Async call (UIntAddModel 3 + 2):", async (assert) => {
+        const actualResult = await boundAsync.uIntAddModel({ ParamA: 3, ParamB: 2 });
+        const expectedResult = 5;
 
-        boundAsync.hello('FluxonautBrowser').then(function (res)
-        {
-            assert.equal(res, "Hello FluxonautBrowser")
-
-            asyncCallback();
-        });
+        assert.equal(expectedResult, actualResult, "Add 3 + 2 resulted in " + expectedResult);
     });
 
-    QUnit.test("Async call (Long Running Task):", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Async call (UIntAdd 3 + 2):", async (assert) => {
+        const actualResult = await boundAsync.uIntAdd(3, 2);
+        const expectedResult = 5;
 
-        boundAsync.doSomething().then(function (res)
-        {
-            assert.ok(true, "Slept for 1000ms")
-
-            asyncCallback();
-        });
+        assert.equal(expectedResult, actualResult, "Add 3 + 2 resulted in " + expectedResult);
     });
 
-    QUnit.test("Async call (return Struct):", function (assert)
-    {
-        var asyncCallback = assert.async();
-
-        boundAsync.returnObject('FluxonautBrowser Struct Test').then(function (res)
-        {
-            assert.equal(res.Value, "FluxonautBrowser Struct Test", "Struct with a single field");
-
-            asyncCallback();
-        });
+    QUnit.test("Async call (Hello):", async (assert) => {
+        const res = await boundAsync.hello('FluxonautBrowser');
+        assert.equal(res, "Hello FluxonautBrowser")
     });
 
-    QUnit.test("Async call (return Class):", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Async call (Long Running Task):", async (assert) => {
+        const res = await boundAsync.doSomething();
+        assert.ok(true, "Slept for 1000ms")
+    });
 
+    QUnit.test("Async call (return Struct):", async (assert) => {
+        var res = await boundAsync.returnObject('FluxonautBrowser Struct Test');
+        assert.equal(res.Value, "FluxonautBrowser Struct Test", "Struct with a single field");
+
+    });
+
+    QUnit.test("Async call (return Class):", async (assert) => {
         //Returns a class
-        boundAsync.returnClass('FluxonautBrowser Class Test').then(function (res)
-        {
-            const expectedResult = 'FluxonautBrowser Class Test';
+        const res = await boundAsync.returnClass('FluxonautBrowser Class Test');
+        const expectedResult = 'FluxonautBrowser Class Test';
 
-            assert.equal(expectedResult, res.Value, "Class with a single property");
-
-            asyncCallback();
-        });
+        assert.equal(expectedResult, res.Value, "Class with a single property");
     });
 
-    QUnit.test("Async call (return Class as JsonString):", function (assert)
-    {
-        var asyncCallback = assert.async();
-
+    QUnit.test("Async call (return Class as JsonString):", async (assert) => {
         const expectedResult = 'FluxonautBrowser Class Test';
 
         //Returns a class
-        boundAsync.returnClassAsJsonString(expectedResult).then(function (res)
-        {
-            assert.equal(expectedResult, res.Value, "Class with a single property");
-
-            asyncCallback();
-        });
+        const res = await boundAsync.returnClassAsJsonString(expectedResult);
+        assert.equal(expectedResult, res.Value, "Class with a single property");
     });
 
-    QUnit.test("Async call (returnStructArray):", function (assert)
-    {
+    QUnit.test("Async call (returnStructArray):", async (assert) => {
+        const res = await boundAsync.returnStructArray('FluxonautBrowser');
+        assert.equal(res[0].Value, "FluxonautBrowserItem1", "Expected Result of FluxonautBrowserItem1");
+        assert.equal(res[1].Value, "FluxonautBrowserItem2", "Expected Result of FluxonautBrowserItem2");
+    });
+
+    QUnit.test("Async call (returnClassesArray):", async (assert) => {
         var asyncCallback = assert.async();
 
-        boundAsync.returnStructArray('FluxonautBrowser').then(function (res)
-        {
+        boundAsync.returnClassesArray('FluxonautBrowser').then(function (res) {
             assert.equal(res[0].Value, "FluxonautBrowserItem1", "Expected Result of FluxonautBrowserItem1");
             assert.equal(res[1].Value, "FluxonautBrowserItem2", "Expected Result of FluxonautBrowserItem2");
 
@@ -184,88 +96,50 @@
         });
     });
 
-    QUnit.test("Async call (returnClassesArray):", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Async call (echoArray):", async (assert) => {
+        const res = await boundAsync.echoArray(["one", null, "three"]);
 
-        boundAsync.returnClassesArray('FluxonautBrowser').then(function (res)
-        {
-            assert.equal(res[0].Value, "FluxonautBrowserItem1", "Expected Result of FluxonautBrowserItem1");
-            assert.equal(res[1].Value, "FluxonautBrowserItem2", "Expected Result of FluxonautBrowserItem2");
-
-            asyncCallback();
-        });
+        assert.equal(res.length, 3, "Expected result to be length 3");
+        assert.equal(res[0], "one", "Expected Result of 1st item");
+        assert.equal(res[1], null, "Expected Result of 2nd item");
+        assert.equal(res[2], "three", "Expected Result of 3rd item");
     });
 
-    QUnit.test("Async call (echoArray):", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Async call (Test Empty Array):", async (assert) => {
+        const res = await boundAsync.echoArray([]);
 
-        boundAsync.echoArray(["one", null, "three"]).then(function (res)
-        {
-            assert.equal(res.length, 3, "Expected result to be length 3");
-            assert.equal(res[0], "one", "Expected Result of 1st item");
-            assert.equal(res[1], null, "Expected Result of 2nd item");
-            assert.equal(res[2], "three", "Expected Result of 3rd item");
-
-            asyncCallback();
-        });
-    });
-
-    QUnit.test("Async call (Test Empty Array):", function (assert)
-    {
-        var asyncCallback = assert.async();
-
-        boundAsync.echoArray([]).then(function (res)
-        {
-            assert.equal(Array.isArray(res), true, "Expected result is an array");
-            assert.equal(res.length, 0, "Expected result to be length 0 (empty array)");
-            asyncCallback();
-        });
+        assert.equal(Array.isArray(res), true, "Expected result is an array");
+        assert.equal(res.length, 0, "Expected result to be length 0 (empty array)");
     });
 
 
-    QUnit.test("Async call (echoValueTypeArray):", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Async call (echoValueTypeArray):", async (assert) => {
+        const res = await boundAsync.echoValueTypeArray([1, null, 3]);
 
-        boundAsync.echoValueTypeArray([1, null, 3]).then(function (res)
-        {
-            assert.equal(res.length, 3, "Expected result to be length 3");
-            assert.equal(res[0], 1, "Expected Result of 1st item");
-            assert.equal(res[1], 0, "Expected Result of 2nd item");
-            assert.equal(res[2], 3, "Expected Result of 3rd item");
-
-            asyncCallback();
-        });
+        assert.equal(res.length, 3, "Expected result to be length 3");
+        assert.equal(res[0], 1, "Expected Result of 1st item");
+        assert.equal(res[1], 0, "Expected Result of 2nd item");
+        assert.equal(res[2], 3, "Expected Result of 3rd item");
     });
 
-    QUnit.test("Async call (echoMultidimensionalArray):", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Async call (echoMultidimensionalArray):", async (assert) => {
+        const res = await boundAsync.echoMultidimensionalArray([[1, 2], null, [3, 4]]);
 
-        boundAsync.echoMultidimensionalArray([[1, 2], null, [3, 4]]).then(function (res)
-        {
-            assert.equal(res.length, 3, "Expected result to be length 3");
-            assert.equal(res[0][0], 1, "Expected Result of 1st item");
-            assert.equal(res[0][1], 2, "Expected Result of 1st item");
-            assert.equal(res[1], null, "Expected Result of 2nd item");
-            assert.equal(res[2][0], 3, "Expected Result of 3rd item");
-            assert.equal(res[2][1], 4, "Expected Result of 3rd item");
-
-            asyncCallback();
-        });
+        assert.equal(res.length, 3, "Expected result to be length 3");
+        assert.equal(res[0][0], 1, "Expected Result of 1st item");
+        assert.equal(res[0][1], 2, "Expected Result of 1st item");
+        assert.equal(res[1], null, "Expected Result of 2nd item");
+        assert.equal(res[2][0], 3, "Expected Result of 3rd item");
+        assert.equal(res[2][1], 4, "Expected Result of 3rd item");
     });
 
-    QUnit.test("Async call (methodReturnList):", function (assert)
-    {
+    QUnit.test("Async call (methodReturnList):", async (assert) => {
         const list1 =
             [
                 "Element 0 - First",
                 "Element 1",
                 "Element 2 - Last"
             ];
-
         const list2 =
             [
                 ["Element 0, 0", "Element 0, 1"],
@@ -273,21 +147,16 @@
                 ["Element 2, 0", "Element 2, 1"]
             ];
 
-        var asyncCallback = assert.async();
-        Promise.all([
+        const results = await Promise.all([
             boundAsync.methodReturnsList(),
             boundAsync.methodReturnsListOfLists(),
-        ]).then(function (results)
-        {
-            assert.ok(deepEqual(results[0], list1), "Call to boundAsync.MethodReturnsList() resulted in : " + JSON.stringify(results[0]));
-            assert.ok(deepEqual(results[1], list2), "Call to boundAsync.MethodReturnsListOfLists() resulted in : " + JSON.stringify(results[1]));
-            asyncCallback();
-        });
+        ]);
 
+        assert.deepEqual(results[0], list1, "Call to boundAsync.MethodReturnsList() resulted in : " + JSON.stringify(results[0]));
+        assert.deepEqual(results[1], list2, "Call to boundAsync.MethodReturnsListOfLists() resulted in : " + JSON.stringify(results[1]));
     });
 
-    QUnit.test("Async call (methodReturnsDictionary):", function (assert)
-    {
+    QUnit.test("Async call (methodReturnsDictionary):", async (assert) => {
         const dict1 =
         {
             "five": 5,
@@ -311,74 +180,57 @@
             }
         };
 
-        var asyncCallback = assert.async();
-        Promise.all([
+        const results = await Promise.all([
             boundAsync.methodReturnsDictionary1(),
             boundAsync.methodReturnsDictionary2(),
             boundAsync.methodReturnsDictionary3()
-        ]).then(function (results)
-        {
-            assert.ok(deepEqual(results[0], dict1), "Call to boundAsync.MethodReturnsDictionary1() resulted in : " + JSON.stringify(results[0]));
-            assert.ok(deepEqual(results[1], dict2), "Call to boundAsync.MethodReturnsDictionary2() resulted in : " + JSON.stringify(results[1]));
-            assert.ok(deepEqual(results[2], dict3), "Call to boundAsync.MethodReturnsDictionary3() resulted in : " + JSON.stringify(results[2]));
-            asyncCallback();
-        });
+        ]);
+
+        assert.deepEqual(results[0], dict1, "Call to boundAsync.MethodReturnsDictionary1() resulted in : " + JSON.stringify(results[0]));
+        assert.deepEqual(results[1], dict2, "Call to boundAsync.MethodReturnsDictionary2() resulted in : " + JSON.stringify(results[1]));
+        assert.deepEqual(results[2], dict3, "Call to boundAsync.MethodReturnsDictionary3() resulted in : " + JSON.stringify(results[2]));
     });
 
-    QUnit.test("Bind boundAsync2 and call (Hello):", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Bind boundAsync2 and call (Hello):", async (assert) => {
+        //Can use both FluxonautBrowser.bindObjectAsync and FluxonautBrowser.BindObjectAsync, both do the same
+        const result = await FluxonautBrowser.bindObjectAsync({ NotifyIfAlreadyBound: true }, "boundAsync2");
+        const res = await boundAsync2.hello('FluxonautBrowser');
 
-        //Can use both fluxonautBrowser.bindObjectAsync and FluxonautBrowser.BindObjectAsync, both do the same
-        fluxonautBrowser.bindObjectAsync({ NotifyIfAlreadyBound: true }, "boundAsync2").then(function (result)
-        {
-            boundAsync2.hello('FluxonautBrowser').then(function (res)
-            {
-                assert.equal(res, "Hello FluxonautBrowser")
-
-                assert.equal(true, FluxonautBrowser.DeleteBoundObject("boundAsync2"), "Object was unbound");
-
-                assert.ok(window.boundAsync2 === undefined, "boundAsync2 is now undefined");
-
-                asyncCallback();
-            });
-        });
+        assert.equal(res, "Hello FluxonautBrowser")
+        assert.equal(true, FluxonautBrowser.DeleteBoundObject("boundAsync2"), "Object was unbound");
+        assert.ok(window.boundAsync2 === undefined, "boundAsync2 is now undefined");
     });
 
     //Repeat of the previous test to make sure binding a deleted object is working
-    QUnit.test("Bind boundAsync2 and call (Hello) Second Attempt:", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Bind boundAsync2 and call (Hello) Second Attempt:", async (assert) => {
+        const result = await FluxonautBrowser.BindObjectAsync({ NotifyIfAlreadyBound: true, IgnoreCache: true }, "boundAsync2");
+        const res = await boundAsync2.hello('FluxonautBrowser');
 
-        FluxonautBrowser.BindObjectAsync({ NotifyIfAlreadyBound: true, IgnoreCache: true }, "boundAsync2").then(function (result)
-        {
-            boundAsync2.hello('FluxonautBrowser').then(function (res)
-            {
-                assert.equal(res, "Hello FluxonautBrowser")
+        assert.equal(res, "Hello FluxonautBrowser")
+    });
 
-                asyncCallback();
-            });
+    QUnit.test("Async call (PassSimpleClassAsArgument):", async (assert) => {
+        const res = await boundAsync.passSimpleClassAsArgument({
+            TestString: "Hello",
+            SubClasses:
+                [
+                    { PropertyOne: "Test Property One", Numbers: [1, 2, 3] },
+                    { PropertyOne: "Test Property Two", Numbers: [4, 5, 6] }
+                ]
         });
+
+        assert.equal(res.Item1, true)
+        assert.equal(res.Item2, "TestString:Hello;SubClasses[0].PropertyOne:Test Property One");
     });
 
     //Repeat of the previous test to make sure binding a deleted object is working
-    QUnit.test("Bind boundAsync2 and call (Hello) Third Attempt:", function (assert)
-    {
-        var asyncCallback = assert.async();
+    QUnit.test("Bind boundAsync2 and call (Hello) Third Attempt:", async (assert) => {
+        const result = await FluxonautBrowser.BindObjectAsync({ NotifyIfAlreadyBound: true, IgnoreCache: true }, "boundAsync2");
+        const res = await boundAsync2.hello('FluxonautBrowser');
 
-        FluxonautBrowser.BindObjectAsync({ NotifyIfAlreadyBound: true, IgnoreCache: true }, "boundAsync2").then(function (result)
-        {
-            boundAsync2.hello('FluxonautBrowser').then(function (res)
-            {
-                assert.equal(res, "Hello FluxonautBrowser")
-
-                assert.equal(true, FluxonautBrowser.DeleteBoundObject("boundAsync2"), "Object was unbound");
-
-                assert.ok(window.boundAsync2 === undefined, "boundAsync2 is now undefined");
-
-                asyncCallback();
-            });
-        });
+        assert.equal(res, "Hello FluxonautBrowser")
+        assert.equal(true, FluxonautBrowser.DeleteBoundObject("boundAsync2"), "Object was unbound");
+        assert.ok(window.boundAsync2 === undefined, "boundAsync2 is now undefined");
     });
 
-})();
+});

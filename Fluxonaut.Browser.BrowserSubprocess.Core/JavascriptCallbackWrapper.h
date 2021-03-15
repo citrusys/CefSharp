@@ -10,7 +10,7 @@ namespace Fluxonaut
 {
     namespace Browser
     {
-        namespace Internals
+        namespace BrowserSubprocess
         {
             private ref class JavascriptCallbackWrapper
             {

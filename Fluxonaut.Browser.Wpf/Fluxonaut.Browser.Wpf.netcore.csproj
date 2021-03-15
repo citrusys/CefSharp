@@ -16,17 +16,18 @@
     <DocumentationFile>$(BaseOutputPath)$(PlatformTarget)\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
     <UseWPF>true</UseWPF>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <SignAssembly>true</SignAssembly>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
 	<DefineConstants>WPF</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <EmbedAllSources>True</EmbedAllSources>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fluxonaut.Browser.Core\Fluxonaut.Browser.Core.netcore.vcxproj" />
+    <ProjectReference Include="..\Fluxonaut.Browser.Core\Fluxonaut.Browser.Core.netcore.csproj" />
     <ProjectReference Include="..\Fluxonaut.Browser\Fluxonaut.Browser.netcore.csproj" />
   </ItemGroup>
 

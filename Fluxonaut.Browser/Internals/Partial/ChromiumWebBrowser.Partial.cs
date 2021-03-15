@@ -5,6 +5,7 @@
 using System;
 using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
 using Fluxonaut.Browser.Internals;
 
 #if OFFSCREEN
@@ -23,6 +24,8 @@ namespace Fluxonaut.Browser.WinForms
             "The ChromiumWebBrowser instance creates the underlying Chromium Embedded Framework (CEF) browser instance in an async fashion. " +
             "The undelying CefBrowser instance is not yet initialized. Use the IsBrowserInitializedChanged event and check " +
             "the IsBrowserInitialized property to determine when the browser has been initialized.";
+
+        private const string CefInitializeFailedErrorMessage = "Cef.Initialize() failed.Check the log file see https://github.com/cefsharp/CefSharp/wiki/Trouble-Shooting#log-file for details.";
 
         /// <summary>
         /// Used as workaround for issue https://github.com/cefsharp/CefSharp/issues/3021
@@ -224,7 +227,8 @@ namespace Fluxonaut.Browser.WinForms
 
         void IWebBrowserInternal.SetJavascriptMessageReceived(JavascriptMessageReceivedEventArgs args)
         {
-            JavascriptMessageReceived?.Invoke(this, args);
+            //Run the event on the ThreadPool (rather than the CEF Thread we are currently on).
+            Task.Run(() => JavascriptMessageReceived?.Invoke(this, args));
         }
 
         /// <summary>

@@ -15,7 +15,7 @@ using namespace System::Runtime::Serialization;
 using namespace System::Linq;
 using namespace System::Collections::Generic;
 
-using namespace Fluxonaut::Browser::Internals::Async;
+using namespace Fluxonaut::Browser::BrowserSubprocess::Async;
 #ifndef NETCOREAPP
 using namespace Fluxonaut::Browser::Internals::Wcf;
 #endif
@@ -24,86 +24,89 @@ namespace Fluxonaut
 {
     namespace Browser
     {
-        // This wraps the transmitted registered objects
-        // by binding the meta-data to V8 JavaScript objects
-        // and installing callbacks for changes to those
-        // objects.
-        private ref class JavascriptRootObjectWrapper
+        namespace BrowserSubprocess
         {
-        private:
-            //Only access through Interlocked::Increment - used to generate unique callback Id's
-            //Is static so ids are unique to this process https://github.com/cefsharp/CefSharp/issues/2792
-            static int64 _lastCallback;
-
-    #ifndef NETCOREAPP
-            initonly List<JavascriptObjectWrapper^>^ _wrappedObjects;
-    #endif
-            initonly List<JavascriptAsyncObjectWrapper^>^ _wrappedAsyncObjects;
-            initonly Dictionary<int64, JavascriptAsyncMethodCallback^>^ _methodCallbacks;
-    #ifndef NETCOREAPP
-            IBrowserProcess^ _browserProcess;
-    #endif
-            // The entire set of possible JavaScript functions to
-            // call directly into.
-            JavascriptCallbackRegistry^ _callbackRegistry;
-
-            int64 SaveMethodCallback(JavascriptAsyncMethodCallback^ callback);
-
-        internal:
-            property JavascriptCallbackRegistry^ CallbackRegistry
+            // This wraps the transmitted registered objects
+            // by binding the meta-data to V8 JavaScript objects
+            // and installing callbacks for changes to those
+            // objects.
+            private ref class JavascriptRootObjectWrapper
             {
-                Fluxonaut::Browser::Internals::JavascriptCallbackRegistry^ get();
-            }
+            private:
+                //Only access through Interlocked::Increment - used to generate unique callback Id's
+                //Is static so ids are unique to this process https://github.com/cefsharp/CefSharp/issues/2792
+                static int64 _lastCallback;
 
-        public:
-    #ifdef NETCOREAPP
-            JavascriptRootObjectWrapper(int browserId)
-    #else
-            JavascriptRootObjectWrapper(int browserId, IBrowserProcess^ browserProcess)
-    #endif
-            {
-    #ifndef NETCOREAPP
-                _browserProcess = browserProcess;
-                _wrappedObjects = gcnew List<JavascriptObjectWrapper^>();
-    #endif
-                _wrappedAsyncObjects = gcnew List<JavascriptAsyncObjectWrapper^>();
-                _callbackRegistry = gcnew JavascriptCallbackRegistry(browserId);
-                _methodCallbacks = gcnew Dictionary<int64, JavascriptAsyncMethodCallback^>();
-            }
+#ifndef NETCOREAPP
+                initonly List<JavascriptObjectWrapper^>^ _wrappedObjects;
+#endif
+                initonly List<JavascriptAsyncObjectWrapper^>^ _wrappedAsyncObjects;
+                initonly Dictionary<int64, JavascriptAsyncMethodCallback^>^ _methodCallbacks;
+#ifndef NETCOREAPP
+                IBrowserProcess^ _browserProcess;
+#endif
+                // The entire set of possible JavaScript functions to
+                // call directly into.
+                JavascriptCallbackRegistry^ _callbackRegistry;
 
-            ~JavascriptRootObjectWrapper()
-            {
-                if (_callbackRegistry != nullptr)
+                int64 SaveMethodCallback(JavascriptAsyncMethodCallback^ callback);
+
+            internal:
+                property JavascriptCallbackRegistry^ CallbackRegistry
                 {
-                    delete _callbackRegistry;
-                    _callbackRegistry = nullptr;
+                    JavascriptCallbackRegistry^ get();
                 }
 
-    #ifndef NETCOREAPP
-                for each (JavascriptObjectWrapper^ var in _wrappedObjects)
+            public:
+#ifdef NETCOREAPP
+                JavascriptRootObjectWrapper(int browserId)
+#else
+                JavascriptRootObjectWrapper(int browserId, IBrowserProcess^ browserProcess)
+#endif
                 {
-                    delete var;
+#ifndef NETCOREAPP
+                    _browserProcess = browserProcess;
+                    _wrappedObjects = gcnew List<JavascriptObjectWrapper^>();
+#endif
+                    _wrappedAsyncObjects = gcnew List<JavascriptAsyncObjectWrapper^>();
+                    _callbackRegistry = gcnew JavascriptCallbackRegistry(browserId);
+                    _methodCallbacks = gcnew Dictionary<int64, JavascriptAsyncMethodCallback^>();
                 }
-                _wrappedObjects->Clear();
 
-    #endif
-
-                for each (JavascriptAsyncObjectWrapper^ var in _wrappedAsyncObjects)
+                ~JavascriptRootObjectWrapper()
                 {
-                    delete var;
+                    if (_callbackRegistry != nullptr)
+                    {
+                        delete _callbackRegistry;
+                        _callbackRegistry = nullptr;
+                    }
+
+#ifndef NETCOREAPP
+                    for each (JavascriptObjectWrapper ^ var in _wrappedObjects)
+                    {
+                        delete var;
+                    }
+                    _wrappedObjects->Clear();
+
+#endif
+
+                    for each (JavascriptAsyncObjectWrapper ^ var in _wrappedAsyncObjects)
+                    {
+                        delete var;
+                    }
+                    _wrappedAsyncObjects->Clear();
+
+                    for each (JavascriptAsyncMethodCallback ^ var in _methodCallbacks->Values)
+                    {
+                        delete var;
+                    }
+                    _methodCallbacks->Clear();
                 }
-                _wrappedAsyncObjects->Clear();
 
-                for each(JavascriptAsyncMethodCallback^ var in _methodCallbacks->Values)
-                {
-                    delete var;
-                }
-                _methodCallbacks->Clear();
-            }
+                bool TryGetAndRemoveMethodCallback(int64 id, JavascriptAsyncMethodCallback^% callback);
 
-            bool TryGetAndRemoveMethodCallback(int64 id, JavascriptAsyncMethodCallback^% callback);
-
-            void Bind(ICollection<JavascriptObject^>^ objects, const CefRefPtr<CefV8Value>& v8Value);
-        };
+                void Bind(ICollection<JavascriptObject^>^ objects, const CefRefPtr<CefV8Value>& v8Value);
+            };
+        }
     }
 }

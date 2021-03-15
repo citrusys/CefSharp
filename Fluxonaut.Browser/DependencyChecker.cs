@@ -73,6 +73,7 @@ namespace Fluxonaut.Browser
         /// </summary>
         public static string[] CefSharpDependencies =
         {
+            "Fluxonaut.Browser.Core.Runtime.dll",
             "Fluxonaut.Browser.Core.dll",
             "Fluxonaut.Browser.dll"
         };
@@ -83,7 +84,6 @@ namespace Fluxonaut.Browser
         public static string[] BrowserSubprocessDependencies =
         {
             "Fluxonaut.Browser.BrowserSubprocess.Core.dll",
-            "Fluxonaut.Browser.Core.dll",
             "Fluxonaut.Browser.dll",
             "icudtl.dat",
             "libcef.dll"

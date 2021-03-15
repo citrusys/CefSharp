@@ -6,12 +6,13 @@
 #include "JavascriptCallbackRegistry.h"
 
 using namespace System::Threading;
+using namespace Fluxonaut::Browser::BrowserSubprocess;
 
 namespace Fluxonaut
 {
     namespace Browser
     {
-        namespace Internals
+        namespace BrowserSubprocess
         {
             JavascriptCallback^ JavascriptCallbackRegistry::Register(const CefRefPtr<CefV8Context>& context, const CefRefPtr<CefV8Value>& value)
             {

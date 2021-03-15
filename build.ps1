@@ -1,5 +1,5 @@
 ﻿param(
-    [ValidateSet("vs2015", "vs2017", "vs2019", "nupkg-only", "gitlink")]
+    [ValidateSet("vs2015", "vs2017", "vs2019", "nupkg-only")]
     [Parameter(Position = 0)] 
     [string] $Target = "vs2019",
     [Parameter(Position = 1)]
@@ -11,9 +11,9 @@
 $WorkingDir = split-path -parent $MyInvocation.MyCommand.Definition
 $FluxonautBrowserSln = Join-Path $WorkingDir 'Fluxonaut.Browser.sln'
 
-# Extract the current CEF Redist version from the Fluxonaut.Browser.Core\packages.config file
+# Extract the current CEF Redist version from the Fluxonaut.Browser.Core.Runtime\packages.config file
 # Save having to update this file manually Example 3.2704.1418
-$FluxonautBrowserCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'Fluxonaut.Browser.Core\packages.Fluxonaut.Browser.Core.config'))
+$FluxonautBrowserCorePackagesXml = [xml](Get-Content (Join-Path $WorkingDir 'Fluxonaut.Browser.Core.Runtime\packages.Fluxonaut.Browser.Core.Runtime.config'))
 $RedistVersion = $FluxonautBrowserCorePackagesXml.SelectSingleNode("//packages/package[@id='fluxonaut.browser.sdk']/@version").value
 
 function Write-Diagnostic 
@@ -291,6 +291,18 @@ function WriteAssemblyVersion
     [System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)
 }
 
+function WriteVersionToTransform($transform)
+{
+    $Filename = Join-Path $WorkingDir $transform
+    $Regex = 'codeBase version="(.*?)"';
+
+    $TransformData = Get-Content -Encoding UTF8 $Filename
+    $NewString = $TransformData -replace $Regex, "codeBase version=""$AssemblyVersion.0"""
+
+    $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
+    [System.IO.File]::WriteAllLines($Filename, $NewString, $Utf8NoBomEncoding)
+}
+
 function WriteVersionToManifest($manifest)
 {
     $Filename = Join-Path $WorkingDir $manifest
@@ -349,8 +361,11 @@ WriteVersionToShfbproj
 WriteVersionToManifest "Fluxonaut.Browser.BrowserSubprocess\app.manifest"
 WriteVersionToManifest "Fluxonaut.Browser.Wpf.Example\app.manifest"
 
+WriteVersionToTransform "NuGet\Fluxonaut.Browser.Common.app.config.x64.transform"
+WriteVersionToTransform "NuGet\Fluxonaut.Browser.Common.app.config.x86.transform"
+
 WriteVersionToResourceFile "Fluxonaut.Browser.BrowserSubprocess.Core\Resource.rc"
-WriteVersionToResourceFile "Fluxonaut.Browser.Core\Resource.rc"
+WriteVersionToResourceFile "Fluxonaut.Browser.Core.Runtime\Resource.rc"
 
 switch -Exact ($Target)
 {

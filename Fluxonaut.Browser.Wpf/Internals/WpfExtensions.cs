@@ -119,10 +119,10 @@ namespace Fluxonaut.Browser.Wpf.Internals
         /// </summary>
         /// <param name="e">The <see cref="DragEventArgs"/> instance containing the event data.</param>
         /// <returns>CefDragDataWrapper.</returns>
-        public static CefDragDataWrapper GetDragDataWrapper(this DragEventArgs e)
+        public static IDragData GetDragData(this DragEventArgs e)
         {
             // Convert Drag Data
-            var dragData = CefDragDataWrapper.Create();
+            var dragData = DragData.Create();
 
             // Files            
             dragData.IsFile = e.Data.GetDataPresent(DataFormats.FileDrop);

@@ -17,20 +17,51 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Fluxonaut.Browser.Core\bin\Win32\Release\Fluxonaut.Browser.Core.dll" target="Fluxonaut.Browser\x86"/>
-    <file src="..\Fluxonaut.Browser.Core\bin\Win32\Release\Fluxonaut.Browser.Core.xml" target="Fluxonaut.Browser\x86"/>
-    <file src="..\Fluxonaut.Browser.Core\bin\Win32\Release\Fluxonaut.Browser.Core.pdb" target="Fluxonaut.Browser\x86"/>
-  
-    <file src="..\Fluxonaut.Browser.Core\bin\x64\Release\Fluxonaut.Browser.Core.dll" target="Fluxonaut.Browser\x64"/>
-    <file src="..\Fluxonaut.Browser.Core\bin\x64\Release\Fluxonaut.Browser.Core.xml" target="Fluxonaut.Browser\x64"/>
-    <file src="..\Fluxonaut.Browser.Core\bin\x64\Release\Fluxonaut.Browser.Core.pdb" target="Fluxonaut.Browser\x64"/>
-  
-    <file src="..\Fluxonaut.Browser\bin\x86\Release\Fluxonaut.Browser.dll" target="Fluxonaut.Browser\x86"/>
-    <file src="..\Fluxonaut.Browser\bin\x86\Release\Fluxonaut.Browser.pdb" target="Fluxonaut.Browser\x86"/>
-  
-    <file src="..\Fluxonaut.Browser\bin\x64\Release\Fluxonaut.Browser.dll" target="Fluxonaut.Browser\x64"/>
-    <file src="..\Fluxonaut.Browser\bin\x64\Release\Fluxonaut.Browser.pdb" target="Fluxonaut.Browser\x64"/>
-  
+    <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.dll" target="lib\net452"/>
+    <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.xml" target="lib\net452"/>
+    <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.pdb" target="lib\net452"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.dll" target="lib\net452"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.xml" target="lib\net452"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.pdb" target="lib\net452"/>
+
+    <!-- Net Core Libs -->
+    <!-- These are actually our net452 libs, we just put them in the netcoreapp3 folder for better support -->
+    <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.dll" target="ref\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.dll" target="ref\netcoreapp3.0"/>
+
+	  <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.dll" target="runtimes\win-x86\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.xml" target="runtimes\win-x86\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.pdb" target="runtimes\win-x86\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.dll" target="runtimes\win-x86\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.xml" target="runtimes\win-x86\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.pdb" target="runtimes\win-x86\lib\netcoreapp3.0"/> 
+	  <file src="..\Fluxonaut.Browser.Core.Runtime\bin\Win32\Release\Fluxonaut.Browser.Core.Runtime.dll" target="runtimes\win-x86\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\Win32\Release\Fluxonaut.Browser.Core.Runtime.xml" target="runtimes\win-x86\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\Win32\Release\Fluxonaut.Browser.Core.Runtime.pdb" target="runtimes\win-x86\lib\netcoreapp3.0"/>
+
+    <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.dll" target="runtimes\win-x64\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.xml" target="runtimes\win-x64\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser\bin\Release\Fluxonaut.Browser.pdb" target="runtimes\win-x64\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.dll" target="runtimes\win-x64\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.xml" target="runtimes\win-x64\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core\bin\Release\Fluxonaut.Browser.Core.pdb" target="runtimes\win-x64\lib\netcoreapp3.0"/> 
+	  <file src="..\Fluxonaut.Browser.Core.Runtime\bin\x64\Release\Fluxonaut.Browser.Core.Runtime.dll" target="runtimes\win-x64\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\x64\Release\Fluxonaut.Browser.Core.Runtime.xml" target="runtimes\win-x64\lib\netcoreapp3.0"/>
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\x64\Release\Fluxonaut.Browser.Core.Runtime.pdb" target="runtimes\win-x64\lib\netcoreapp3.0"/>
+
+
+    <!-- Cannot put these inside lib\net452 etc, since there are both x86 and x64 versions which we must distinguish between. We
+         solve this using a .targets file instead to copy them based on PlatformTarget -->
+
+    <!-- Common Fluxonaut.Browser stuff (shared between both WPF, Offscreen and WinForms) -->
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\Win32\Release\Fluxonaut.Browser.Core.Runtime.dll" target="Fluxonaut.Browser\x86"/>
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\Win32\Release\Fluxonaut.Browser.Core.Runtime.xml" target="Fluxonaut.Browser\x86"/>
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\Win32\Release\Fluxonaut.Browser.Core.Runtime.pdb" target="Fluxonaut.Browser\x86"/>
+
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\x64\Release\Fluxonaut.Browser.Core.Runtime.dll" target="Fluxonaut.Browser\x64"/>
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\x64\Release\Fluxonaut.Browser.Core.Runtime.xml" target="Fluxonaut.Browser\x64"/>
+    <file src="..\Fluxonaut.Browser.Core.Runtime\bin\x64\Release\Fluxonaut.Browser.Core.Runtime.pdb" target="Fluxonaut.Browser\x64"/>
+
     <file src="..\Fluxonaut.Browser.BrowserSubprocess\bin\x86\Release\Fluxonaut.Browser.BrowserSubprocess.Core.dll" target="Fluxonaut.Browser\x86"/>
     <file src="..\Fluxonaut.Browser.BrowserSubprocess\bin\x86\Release\Fluxonaut.Browser.BrowserSubprocess.Core.pdb" target="Fluxonaut.Browser\x86"/>
     <file src="..\Fluxonaut.Browser.BrowserSubprocess\bin\x86\Release\Fluxonaut.Browser.BrowserSubprocess.exe" target="Fluxonaut.Browser\x86"/>
@@ -41,12 +72,17 @@
     <file src="..\Fluxonaut.Browser.BrowserSubprocess\bin\x64\Release\Fluxonaut.Browser.BrowserSubprocess.exe" target="Fluxonaut.Browser\x64"/>
     <file src="..\Fluxonaut.Browser.BrowserSubprocess\bin\x64\Release\Fluxonaut.Browser.BrowserSubprocess.pdb" target="Fluxonaut.Browser\x64"/>
 
-    <file src="Fluxonaut.Browser.Common.props" target="build" />
-    <file src="Fluxonaut.Browser.Common.targets" target="build" />
+    <file src="Fluxonaut.Browser.Common.props" target="buildTransitive" />
+    <file src="Fluxonaut.Browser.Common.targets" target="buildTransitive" />
+    <file src="Fluxonaut.Browser.Common.import.props" target="build\Fluxonaut.Browser.Common.props" />
+    <file src="Fluxonaut.Browser.Common.import.targets" target="build\Fluxonaut.Browser.Common.targets" />
+    <file src="Fluxonaut.Browser.Common.app.config.x86.transform" target="build\app.config.x86.transform" />
+    <file src="Fluxonaut.Browser.Common.app.config.x64.transform" target="build\app.config.x64.transform" />
   
     <file src="..\Fluxonaut.Browser\**\*.cs" target="src\Fluxonaut.Browser" />
-    <file src="..\Fluxonaut.Browser.Core\**\*.h" target="src\Fluxonaut.Browser.Core" />
-    <file src="..\Fluxonaut.Browser.Core\**\*.cpp" target="src\Fluxonaut.Browser.Core" />
+    <file src="..\Fluxonaut.Browser.Core\**\*.cs" target="src\Fluxonaut.Browser.Core" />
+    <file src="..\Fluxonaut.Browser.Core.Runtime\**\*.h" target="src\Fluxonaut.Browser.Core.Runtime" />
+    <file src="..\Fluxonaut.Browser.Core.Runtime\**\*.cpp" target="src\Fluxonaut.Browser.Core.Runtime" />
     <file src="..\Fluxonaut.Browser.BrowserSubprocess.Core\**\*.h" target="src\Fluxonaut.Browser.BrowserSubprocess.Core" exclude="packages\**;obj\**" />
     <file src="..\Fluxonaut.Browser.BrowserSubprocess.Core\**\*.cpp" target="src\Fluxonaut.Browser.BrowserSubprocess.Core" exclude="packages\**;obj\**" />
     <file src="..\Fluxonaut.Browser.BrowserSubprocess\**\*.cs" target="src\Fluxonaut.Browser.BrowserSubprocess" exclude="packages\**;obj\**" />

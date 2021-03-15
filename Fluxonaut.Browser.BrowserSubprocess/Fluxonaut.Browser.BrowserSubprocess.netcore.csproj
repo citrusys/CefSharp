@@ -15,16 +15,20 @@
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <RootNamespace>Fluxonaut.Browser.BrowserSubprocess</RootNamespace>
         <AssemblyName>Fluxonaut.Browser.BrowserSubprocess</AssemblyName>
-        <DocumentationFile>$(BaseOutputPath)$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <SignAssembly>true</SignAssembly>
         <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <StartupObject>Fluxonaut.Browser.BrowserSubprocess.Program</StartupObject>
+        <Platforms>x86;x64</Platforms>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PropertyGroup Condition="'$(Configuration)'=='Debug'">
       <WarningLevel>2</WarningLevel>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <EmbedAllSources>True</EmbedAllSources>
+        <DebugType>embedded</DebugType>
     </PropertyGroup>
 
     <ItemGroup>

@@ -21,16 +21,9 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\Fluxonaut.Browser.Wpf\bin\x86\Release\Fluxonaut.Browser.Wpf.dll" target="Fluxonaut.Browser\x86" />
-    <file src="..\Fluxonaut.Browser.Wpf\bin\x86\Release\Fluxonaut.Browser.Wpf.xml" target="Fluxonaut.Browser\x86" />
-    <file src="..\Fluxonaut.Browser.Wpf\bin\x86\Release\Fluxonaut.Browser.Wpf.pdb" target="Fluxonaut.Browser\x86" />
-
-    <file src="..\Fluxonaut.Browser.Wpf\bin\x64\Release\Fluxonaut.Browser.Wpf.xml" target="Fluxonaut.Browser\x64" />
-    <file src="..\Fluxonaut.Browser.Wpf\bin\x64\Release\Fluxonaut.Browser.Wpf.dll" target="Fluxonaut.Browser\x64" />
-    <file src="..\Fluxonaut.Browser.Wpf\bin\x64\Release\Fluxonaut.Browser.Wpf.pdb" target="Fluxonaut.Browser\x64" />
-
-    <file src="Fluxonaut.Browser.Wpf.props" target="build" />
-    <file src="Fluxonaut.Browser.Wpf.targets" target="build" />
+    <file src="..\Fluxonaut.Browser.Wpf\bin\Release\Fluxonaut.Browser.Wpf.dll" target="lib\net452" />
+    <file src="..\Fluxonaut.Browser.Wpf\bin\Release\Fluxonaut.Browser.Wpf.xml" target="lib\net452" />
+    <file src="..\Fluxonaut.Browser.Wpf\bin\Release\Fluxonaut.Browser.Wpf.pdb" target="lib\net452" />
 
     <file src="..\Fluxonaut.Browser.Wpf\**\*.cs" target="src\Fluxonaut.Browser.Wpf" />
   </files>

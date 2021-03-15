@@ -7,12 +7,13 @@
 #include "JavascriptCallbackWrapper.h"
 
 using namespace System::Collections::Concurrent;
+using namespace Fluxonaut::Browser::BrowserSubprocess;
 
 namespace Fluxonaut
 {
     namespace Browser
     {
-        namespace Internals
+        namespace BrowserSubprocess
         {
             private ref class JavascriptCallbackRegistry
             {

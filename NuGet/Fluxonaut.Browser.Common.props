@@ -4,36 +4,13 @@
     <FluxonautBrowserCommonBinaries32 Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\*.*" />
     <FluxonautBrowserCommonBinaries64 Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x64\*.*" />
     <FluxonautBrowserCommonBinariesAnyCPU Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\**\*.*" />
+    <FluxonautBrowserCommonManagedDlls Include="$(MSBuildThisFileDirectory)..\lib\net452\**\*.*" />
+    <!-- Just Fluxonaut.Browser.dlll -->
+    <FluxonautBrowserCommonManagedDll Include="$(MSBuildThisFileDirectory)..\lib\net452\Fluxonaut.Browser.dll" />
+    <FluxonautBrowserCommonTransform32 Include="$(MSBuildThisFileDirectory)..\build\app.config.x86.transform"/>
+    <FluxonautBrowserCommonTransform64 Include="$(MSBuildThisFileDirectory)..\build\app.config.x64.transform"/>
 
     <FluxonautBrowserProcessCore32 Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.BrowserSubprocess.Core.dll" />
     <FluxonautBrowserProcessCore64 Include="$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x64\Fluxonaut.BrowserSubprocess.Core.dll" />
   </ItemGroup>
-  
-  <Choose>
-    <When Condition="'$(Platform)' == 'x64'">
-      <ItemGroup>
-        <Reference Include="Fluxonaut.Browser">
-          <HintPath>$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x64\Fluxonaut.Browser.dll</HintPath>
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="Fluxonaut.Browser.Core">
-          <HintPath>$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x64\Fluxonaut.Browser.Core.dll</HintPath>
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <!-- x86, Win32 and AnyCPU -->
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Fluxonaut.Browser">
-          <HintPath>$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.dll</HintPath>
-          <Private>False</Private>
-        </Reference>
-        <Reference Include="Fluxonaut.Browser.Core">
-          <HintPath>$(MSBuildThisFileDirectory)..\Fluxonaut.Browser\x86\Fluxonaut.Browser.Core.dll</HintPath>
-          <Private>False</Private>
-        </Reference>
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
 </Project>

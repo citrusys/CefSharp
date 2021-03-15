@@ -12,54 +12,57 @@ using namespace System::Runtime::Serialization;
 using namespace System::Linq;
 using namespace System::Threading;
 using namespace System::Collections::Generic;
-using namespace Fluxonaut::Browser::Internals::Async;
+using namespace Fluxonaut::Browser::BrowserSubprocess::Async;
 
 
 namespace Fluxonaut
 {
     namespace Browser
     {
-        //TODO: JSB Fix naming of this class, it's pretty horrible currently
-        private ref class RegisterBoundObjectRegistry
+        namespace BrowserSubprocess
         {
-        private:
-            //Only access through Interlocked::Increment - used to generate unique callback Id's
-            //Is static so ids are unique to this process https://github.com/cefsharp/CefSharp/issues/2792
-            static int64 _lastCallback;
-
-            initonly Dictionary<int64, JavascriptAsyncMethodCallback^>^ _methodCallbacks;
-
-        public:
-            RegisterBoundObjectRegistry()
+            //TODO: JSB Fix naming of this class, it's pretty horrible currently
+            private ref class RegisterBoundObjectRegistry
             {
-                _methodCallbacks = gcnew Dictionary<int64, JavascriptAsyncMethodCallback^>();
-            }
+            private:
+                //Only access through Interlocked::Increment - used to generate unique callback Id's
+                //Is static so ids are unique to this process https://github.com/cefsharp/CefSharp/issues/2792
+                static int64 _lastCallback;
 
-            ~RegisterBoundObjectRegistry()
-            {
-                for each (JavascriptAsyncMethodCallback ^ var in _methodCallbacks->Values)
+                initonly Dictionary<int64, JavascriptAsyncMethodCallback^>^ _methodCallbacks;
+
+            public:
+                RegisterBoundObjectRegistry()
                 {
-                    delete var;
+                    _methodCallbacks = gcnew Dictionary<int64, JavascriptAsyncMethodCallback^>();
                 }
-                _methodCallbacks->Clear();
-            }
 
-            int64 SaveMethodCallback(JavascriptAsyncMethodCallback^ callback)
-            {
-                auto callbackId = Interlocked::Increment(_lastCallback);
-                _methodCallbacks->Add(callbackId, callback);
-                return callbackId;
-            }
-
-            bool TryGetAndRemoveMethodCallback(int64 id, JavascriptAsyncMethodCallback^% callback)
-            {
-                bool result = false;
-                if (result = _methodCallbacks->TryGetValue(id, callback))
+                ~RegisterBoundObjectRegistry()
                 {
-                    _methodCallbacks->Remove(id);
+                    for each (JavascriptAsyncMethodCallback ^ var in _methodCallbacks->Values)
+                    {
+                        delete var;
+                    }
+                    _methodCallbacks->Clear();
                 }
-                return result;
-            }
-        };
+
+                int64 SaveMethodCallback(JavascriptAsyncMethodCallback^ callback)
+                {
+                    auto callbackId = Interlocked::Increment(_lastCallback);
+                    _methodCallbacks->Add(callbackId, callback);
+                    return callbackId;
+                }
+
+                bool TryGetAndRemoveMethodCallback(int64 id, JavascriptAsyncMethodCallback^% callback)
+                {
+                    bool result = false;
+                    if (result = _methodCallbacks->TryGetValue(id, callback))
+                    {
+                        _methodCallbacks->Remove(id);
+                    }
+                    return result;
+                }
+            };
+        }
     }
 }

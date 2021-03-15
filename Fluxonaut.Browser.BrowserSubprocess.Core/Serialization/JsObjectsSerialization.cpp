@@ -4,14 +4,16 @@
 
 #include "stdafx.h"
 #include "JsObjectsSerialization.h"
-#include "../Fluxonaut.Browser.Core/Internals/Serialization/Primitives.h"
-#include "../Fluxonaut.Browser.Core/Internals/Serialization/ObjectsSerialization.h"
+#include "../Fluxonaut.Browser.Core.Runtime/Internals/Serialization/Primitives.h"
+#include "../Fluxonaut.Browser.Core.Runtime/Internals/Serialization/ObjectsSerialization.h"
+
+using namespace Fluxonaut::Browser::Internals::Serialization;
 
 namespace Fluxonaut
 {
     namespace Browser
     {
-        namespace Internals
+        namespace BrowserSubprocess
         {
             namespace Serialization
             {

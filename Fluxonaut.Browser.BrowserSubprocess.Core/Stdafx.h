@@ -14,8 +14,8 @@
 
 #include <include/cef_base.h>
 
-#include ".\..\Fluxonaut.Browser.Core\Internals\MCefRefPtr.h"
-#include ".\..\Fluxonaut.Browser.Core\Internals\StringUtils.h"
+#include ".\..\Fluxonaut.Browser.Core.Runtime\Internals\MCefRefPtr.h"
+#include ".\..\Fluxonaut.Browser.Core.Runtime\Internals\StringUtils.h"
 #include "vcclr_local.h"
 
 using namespace System;

@@ -18,7 +18,11 @@ namespace Fluxonaut.Browser.Example
         public const string ExampleDomain = "fluxonaut.example";
         public const string BaseUrl = "https://" + ExampleDomain;
         public const string DefaultUrl = BaseUrl + "/home.html";
+#if NETCOREAPP
+        public const string BindingTestUrl = BaseUrl + "/BindingTestNetCore.html";
+#else
         public const string BindingTestUrl = BaseUrl + "/BindingTest.html";
+#endif
         public const string BindingTestNetCoreUrl = BaseUrl + "/BindingTestNetCore.html";
         public const string BindingTestSingleUrl = BaseUrl + "/BindingTestSingle.html";
         public const string BindingTestsAsyncTaskUrl = BaseUrl + "/BindingTestsAsyncTask.html";
@@ -164,11 +168,10 @@ namespace Fluxonaut.Browser.Example
 
             if (DebuggingSubProcess)
             {
-
-#if NETCOREAPP
-                settings.BrowserSubprocessPath = Path.GetFullPath("..\\..\\..\\..\\..\\Fluxonaut.Browser.BrowserSubprocess\\bin.netcore\\Debug\\netcoreapp3.1\\Fluxonaut.Browser.BrowserSubprocess.exe");
-#else
                 var architecture = Environment.Is64BitProcess ? "x64" : "x86";
+#if NETCOREAPP
+                settings.BrowserSubprocessPath = Path.GetFullPath("..\\..\\..\\..\\..\\Fluxonaut.Browser.BrowserSubprocess\\bin.netcore\\" + architecture + "\\Debug\\netcoreapp3.1\\Fluxonaut.Browser.BrowserSubprocess.exe");
+#else
                 settings.BrowserSubprocessPath = Path.GetFullPath("..\\..\\..\\..\\Fluxonaut.Browser.BrowserSubprocess\\bin\\" + architecture + "\\Debug\\Fluxonaut.Browser.BrowserSubprocess.exe");
 #endif
             }

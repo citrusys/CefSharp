@@ -13,13 +13,13 @@ namespace Fluxonaut.Browser.Internals
     {
         //Limit to 1 task per methodRunnerQueue
         //https://social.msdn.microsoft.com/Forums/vstudio/en-US/d0bcb415-fb1e-42e4-90f8-c43a088537fb/aborting-a-long-running-task-in-tpl?forum=parallelextensions
-        private readonly TaskFactory methodRunnerQueueTaskFactory = new TaskFactory(new LimitedConcurrencyLevelTaskScheduler(1));
-        private readonly JavascriptObjectRepository repository;
+        private readonly LimitedConcurrencyLevelTaskScheduler taskScheduler = new LimitedConcurrencyLevelTaskScheduler(1);
+        private readonly IJavascriptObjectRepositoryInternal repository;
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public event EventHandler<MethodInvocationCompleteArgs> MethodInvocationComplete;
 
-        public MethodRunnerQueue(JavascriptObjectRepository repository)
+        public MethodRunnerQueue(IJavascriptObjectRepositoryInternal repository)
         {
             this.repository = repository;
         }
@@ -32,7 +32,7 @@ namespace Fluxonaut.Browser.Internals
 
         public void Enqueue(MethodInvocation methodInvocation)
         {
-            methodRunnerQueueTaskFactory.StartNew(() =>
+            Task.Factory.StartNew(() =>
             {
                 var result = ExecuteMethodInvocation(methodInvocation);
 
@@ -41,12 +41,12 @@ namespace Fluxonaut.Browser.Internals
                 {
                     handler(this, new MethodInvocationCompleteArgs(result));
                 }
-            }, cancellationTokenSource.Token);
+            }, cancellationTokenSource.Token, TaskCreationOptions.HideScheduler, taskScheduler);
         }
 
         private MethodInvocationResult ExecuteMethodInvocation(MethodInvocation methodInvocation)
         {
-            object result = null;
+            object returnValue = null;
             string exception;
             var success = false;
             var nameConverter = repository.NameConverter;
@@ -54,10 +54,13 @@ namespace Fluxonaut.Browser.Internals
             //make sure we don't throw exceptions in the executor task
             try
             {
-                success = repository.TryCallMethod(methodInvocation.ObjectId, methodInvocation.MethodName, methodInvocation.Parameters.ToArray(), out result, out exception);
+                var result = repository.TryCallMethod(methodInvocation.ObjectId, methodInvocation.MethodName, methodInvocation.Parameters.ToArray());
+                success = result.Success;
+                returnValue = result.ReturnValue;
+                exception = result.Exception;
 
                 //We don't support Tasks by default
-                if (success && result != null && (typeof(Task).IsAssignableFrom(result.GetType())))
+                if (success && returnValue != null && (typeof(Task).IsAssignableFrom(returnValue.GetType())))
                 {
                     //Use StringBuilder to improve the formatting/readability of the error message
                     //I'm sure there's a better way I just cannot remember of the top of my head so going
@@ -84,7 +87,7 @@ namespace Fluxonaut.Browser.Internals
                 CallbackId = methodInvocation.CallbackId,
                 FrameId = methodInvocation.FrameId,
                 Message = exception,
-                Result = result,
+                Result = returnValue,
                 Success = success,
                 NameConverter = nameConverter
             };

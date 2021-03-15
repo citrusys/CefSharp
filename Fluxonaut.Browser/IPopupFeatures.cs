@@ -2,7 +2,6 @@
 //
 // Use of this source code is governed by a BSD-style license that can be found in the LICENSE file.
 
-
 namespace Fluxonaut.Browser
 {
     /// <summary>
@@ -16,61 +15,33 @@ namespace Fluxonaut.Browser
         /// <value>
         /// The x coordinate.
         /// </value>
-        int X { get; }
+        int? X { get; }
         /// <summary>
         /// Gets the set.
         /// </summary>
         /// <value>
         /// The x coordinate set.
         /// </value>
-        int XSet { get; }
-        /// <summary>
-        /// Gets the y coordinate.
-        /// </summary>
-        /// <value>
-        /// The y coordinate.
-        /// </value>
-        int Y { get; }
+        int? Y { get; }
         /// <summary>
         /// Gets the set.
         /// </summary>
         /// <value>
         /// The y coordinate set.
         /// </value>
-        int YSet { get; }
-        /// <summary>
-        /// Gets the width.
-        /// </summary>
-        /// <value>
-        /// The width.
-        /// </value>
-        int Width { get; }
+        int? Width { get; }
         /// <summary>
         /// Gets the set the width belongs to.
         /// </summary>
         /// <value>
         /// The width set.
         /// </value>
-        int WidthSet { get; }
-        /// <summary>
-        /// Gets the height.
-        /// </summary>
-        /// <value>
-        /// The height.
-        /// </value>
-        int Height { get; }
+        int? Height { get; }
         /// <summary>
         /// Gets the set the height belongs to.
         /// </summary>
         /// <value>
         /// The height set.
-        /// </value>
-        int HeightSet { get; }
-        /// <summary>
-        /// Gets a value indicating whether the menu bar is visible.
-        /// </summary>
-        /// <value>
-        /// True if menu bar visible, false if not.
         /// </value>
         bool MenuBarVisible { get; }
         /// <summary>

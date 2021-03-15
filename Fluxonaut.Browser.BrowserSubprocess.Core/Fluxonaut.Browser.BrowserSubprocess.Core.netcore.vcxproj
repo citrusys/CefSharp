@@ -170,11 +170,11 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\MCefRefPtr.h" />
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\ReportUnhandledExceptions.h" />
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\Serialization\ObjectsSerialization.h" />
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\Serialization\Primitives.h" />
-    <ClInclude Include="..\Fluxonaut.Browser.Core\Internals\StringUtils.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\MCefRefPtr.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\ReportUnhandledExceptions.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\Serialization\ObjectsSerialization.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\Serialization\Primitives.h" />
+    <ClInclude Include="..\Fluxonaut.Browser.Core.Runtime\Internals\StringUtils.h" />
     <ClInclude Include="BindObjectAsyncHandler.h" />
     <ClCompile Include="BrowserSubprocessExecutable.h" />
     <ClInclude Include="Cef.h" />
@@ -203,8 +203,8 @@
     <ClInclude Include="vcclr_local.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Fluxonaut.Browser.Core\Internals\Serialization\ObjectsSerialization.cpp" />
-    <ClCompile Include="..\Fluxonaut.Browser.Core\Internals\Serialization\Primitives.cpp" />
+    <ClCompile Include="..\Fluxonaut.Browser.Core.Runtime\Internals\Serialization\ObjectsSerialization.cpp" />
+    <ClCompile Include="..\Fluxonaut.Browser.Core.Runtime\Internals\Serialization\Primitives.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
     <ClCompile Include="Async\JavascriptAsyncMethodCallback.cpp" />
     <ClCompile Include="Async\JavascriptAsyncMethodHandler.cpp" />

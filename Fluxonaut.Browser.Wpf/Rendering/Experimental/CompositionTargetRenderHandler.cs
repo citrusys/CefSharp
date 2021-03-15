@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
+using System.Windows.Threading;
 using Rect = Fluxonaut.Browser.Structs.Rect;
 
 namespace Fluxonaut.Browser.Wpf.Rendering.Experimental
@@ -20,8 +20,8 @@ namespace Fluxonaut.Browser.Wpf.Rendering.Experimental
     /// </summary>
     public class CompositionTargetRenderHandler : IRenderHandler
     {
-        private readonly PaintElement view;
-        private readonly PaintElement popup;
+        private PaintElement view;
+        private PaintElement popup;
         private readonly object lockObj = new object();
         private ChromiumWebBrowser browser;
 
@@ -30,8 +30,8 @@ namespace Fluxonaut.Browser.Wpf.Rendering.Experimental
             this.browser = browser;
             this.browser.IsVisibleChanged += BrowserIsVisibleChanged;
 
-            this.view = new PaintElement(dpiX, dpiY);
-            this.popup = new PaintElement(dpiX, dpiY);
+            view = new PaintElement(dpiX, dpiY);
+            popup = new PaintElement(dpiX, dpiY);
 
             if (browser.IsVisible)
             {
@@ -39,7 +39,7 @@ namespace Fluxonaut.Browser.Wpf.Rendering.Experimental
             }
         }
 
-        private void BrowserIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        private void BrowserIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if ((bool)e.NewValue)
             {
@@ -58,10 +58,18 @@ namespace Fluxonaut.Browser.Wpf.Rendering.Experimental
             browser.IsVisibleChanged -= BrowserIsVisibleChanged;
             browser = null;
 
+            if (browser != null)
+            {
+                browser.IsVisibleChanged -= BrowserIsVisibleChanged;
+                browser = null;
+            }
+
             lock (lockObj)
             {
-                view.Dispose();
-                popup.Dispose();
+                view?.Dispose();
+                view = null;
+                popup?.Dispose();
+                popup = null;
             }
         }
 
@@ -80,7 +88,7 @@ namespace Fluxonaut.Browser.Wpf.Rendering.Experimental
             lock (lockObj)
             {
                 var layer = isPopup ? popup : view;
-                layer.OnPaint(dirtyRect, buffer, width, height, image);
+                layer?.OnPaint(dirtyRect, buffer, width, height, image);
             }
         }
 
@@ -95,7 +103,7 @@ namespace Fluxonaut.Browser.Wpf.Rendering.Experimental
 
         private void UpdateImage(PaintElement element)
         {
-            if (element.Image != null)
+            if (element.IsDirty && element.Image != null)
             {
                 var bitmap = element.Image.Source as WriteableBitmap;
                 if (bitmap == null || bitmap.PixelWidth != element.Width || bitmap.PixelHeight != element.Height)
