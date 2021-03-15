@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -18,13 +18,13 @@
         <p class="lead">Asynchronous events from the Javascript environment.</p>
         <p>Sending events from the Javascript environment to a .Net class involves the following:</p>
         <ul>
-            <li>Create a class with a public method that will be exposed to the Javascript environment (see CefSharp\CefSharp.Example\ScriptedMethodsBoundObject.cs RaiseEvent().)</li>
-            <li>Bind the class to the Javascript runtime using RegisterJsObject (see CefSharp\CefSharp.WinForms.Example\BrowserTabUserControl.cs ctor().)</li>
-            <li>Invoke the exposed function in Javascript using window.[bound object name].[method name] (see CefSharp\CefSharp.Example\ScriptedMethods.cs ListenForClick().)</li>
+            <li>Create a class with a public method that will be exposed to the Javascript environment (see CefSharp\Fluxonaut.Browser.Example\ScriptedMethodsBoundObject.cs RaiseEvent().)</li>
+            <li>Bind the class to the Javascript runtime using RegisterJsObject (see CefSharp\Fluxonaut.Browser.WinForms.Example\BrowserTabUserControl.cs ctor().)</li>
+            <li>Invoke the exposed function in Javascript using window.[bound object name].[method name] (see CefSharp\Fluxonaut.Browser.Example\ScriptedMethods.cs ListenForClick().)</li>
         </ul>
         <p>Most of the time the web page's Javascript will be written specifically to interact with the embedded browser and any class methods that are exposed through RegisterJsObject. However to monitor some web pages it may be necessary to inject Javascript code that can detect changes and events in the web page and then invoke a method on a bound object.</p>
         <ul>
-            <li>Create Javascript code that monitors the web page and invokes the exposed function (see CefSharp\CefSharp.Example\ScriptedMethods.cs ListenForClick().)</li>
+            <li>Create Javascript code that monitors the web page and invokes the exposed function (see CefSharp\Fluxonaut.Browser.Example\ScriptedMethods.cs ListenForClick().)</li>
         </ul>
         <p class="lead">Demonstration</p>
         <p>This page demonstrates the injection of Javascript code that asynchronously invokes a bound method when a button is clicked. Clicking the <em>Script -> Listen for button click</em> menu will cause Javascript<a href="#injected-code"><sup>1</sup></a> to be executed that adds an event listener to the click event of the button below. When the button is clicked the bound class's exposed method will be invoked with information from the event including the element's id attribute and tag name.</p>
@@ -33,7 +33,7 @@
         <pre data-shbrush="js">
             (async function ()
             {
-                await CefSharp.BindObjectAsync("boundEvent");
+                await FluxonautBrowser.BindObjectAsync("boundEvent");
                 var counter = 0;
                 var elem = document.getElementById('test-button');
                 elem.removeAttribute('disabled');

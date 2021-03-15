@@ -47,7 +47,7 @@ namespace Fluxonaut
                 {
                     _cefSettings->multi_threaded_message_loop = true;
                     _cefSettings->no_sandbox = true;
-                    BrowserSubprocessPath = Path::Combine(Path::GetDirectoryName(CefSettingsBase::typeid->Assembly->Location), "CefSharp.BrowserSubprocess.exe");
+                    BrowserSubprocessPath = Path::Combine(Path::GetDirectoryName(CefSettingsBase::typeid->Assembly->Location), "Fluxonaut.Browser.BrowserSubprocess.exe");
                     _cefCustomSchemes = gcnew List<CefCustomScheme^>();
                     _cefCommandLineArgs = gcnew CommandLineArgDictionary();
 
@@ -133,7 +133,7 @@ namespace Fluxonaut
                 /// The path to a separate executable that will be launched for sub-processes. By default the browser process executable is used.
                 /// See the comments on Cef.ExecuteProcess() for details. If this value is non-empty then it must be an absolute path.
                 /// Also configurable using the "browser-subprocess-path" command-line switch.
-                /// Defaults to using the provided CefSharp.BrowserSubprocess.exe instance
+                /// Defaults to using the provided Fluxonaut.Browser.BrowserSubprocess.exe instance
                 /// </summary>
                 property String^ BrowserSubprocessPath
                 {

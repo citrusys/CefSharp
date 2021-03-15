@@ -62,10 +62,10 @@ namespace Fluxonaut.Browser.JavascriptBinding
         }
 
         /// <summary>
-        /// When using an <see cref="CefSharp.ModelBinding.IAsyncMethodInterceptor"/>
-        /// the <see cref="CefSharp.ModelBinding.IAsyncMethodInterceptor.InterceptAsync(System.Func{object[], object}, object[], string)"/>
+        /// When using an <see cref="Fluxonaut.Browser.ModelBinding.IAsyncMethodInterceptor"/>
+        /// the <see cref="Fluxonaut.Browser.ModelBinding.IAsyncMethodInterceptor.InterceptAsync(System.Func{object[], object}, object[], string)"/>
         /// method is call for all methods (the default is to call InterceptAsync only for methods that return a Task).
-        /// This only applies when <see cref="BindingOptions.MethodInterceptor"/> is of type <see cref="CefSharp.ModelBinding.IAsyncMethodInterceptor"/>
+        /// This only applies when <see cref="BindingOptions.MethodInterceptor"/> is of type <see cref="Fluxonaut.Browser.ModelBinding.IAsyncMethodInterceptor"/>
         /// </summary>
         public bool AlwaysInterceptAsynchronously
         {

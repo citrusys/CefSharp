@@ -222,10 +222,10 @@
                             public const string SchemeName = "custom";
                             public IResourceHandler Create(IBrowser browser, IFrame frame, string schemeName, IRequest request)
                             {
-                                if (schemeName == SchemeName && request.Url.EndsWith("CefSharp.Core.xml", System.StringComparison.OrdinalIgnoreCase))
+                                if (schemeName == SchemeName && request.Url.EndsWith("Fluxonaut.Browser.Core.xml", System.StringComparison.OrdinalIgnoreCase))
                                 {
                                     //Display the debug.log file in the browser
-                                    return ResourceHandler.FromFileName("CefSharp.Core.xml", ".xml");
+                                    return ResourceHandler.FromFileName("Fluxonaut.Browser.Core.xml", ".xml");
                                 }
                                 return new CefSharpSchemeHandler();
                             }
@@ -304,8 +304,8 @@
 
                     <h3 id="features-javascript-integration">JavaScript integration</h3>
                     <p>
-                        If you are reading this page in either one of the <strong>CefSharp.Wpf.Example</strong> or
-                        <strong>CefSharp.WinForms.Example</strong> sample applications, you can use the boxes on the right side
+                        If you are reading this page in either one of the <strong>Fluxonaut.Browser.Wpf.Example</strong> or
+                        <strong>Fluxonaut.Browser.WinForms.Example</strong> sample applications, you can use the boxes on the right side
                         of the screen to run arbitrary JavaScript code towards the context of this page. By default, the content
                         of the block below will be modified/inspected by the script code.
 

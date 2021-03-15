@@ -18,7 +18,7 @@ namespace Fluxonaut.Browser.DevTools
             return Internals.Json.JsonEnumConverterFactory.ConvertEnumToString(val);
         }
 
-        protected IEnumerable<string> EnumToString(CefSharp.DevTools.Emulation.DisabledImageType[] values)
+        protected IEnumerable<string> EnumToString(Fluxonaut.Browser.DevTools.Emulation.DisabledImageType[] values)
         {
             foreach (var val in values)
             {

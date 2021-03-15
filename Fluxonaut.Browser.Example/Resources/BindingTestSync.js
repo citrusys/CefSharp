@@ -6,7 +6,7 @@ QUnit.module('BindingTestSync', (hooks) =>
 
     QUnit.test("BindObjectAsync Second call with Bound param", async (assert) =>
     {
-        const res = await CefSharp.BindObjectAsync("bound");
+        const res = await FluxonautBrowser.BindObjectAsync("bound");
 
         assert.equal(res.Success, false, "Second call to BindObjectAsync with already bound objects as params returned false.");
     });

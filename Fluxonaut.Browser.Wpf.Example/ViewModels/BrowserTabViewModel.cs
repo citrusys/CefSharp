@@ -228,7 +228,7 @@ namespace Fluxonaut.Browser.Wpf.Example.ViewModels
         {
             var postData = System.Text.Encoding.Default.GetBytes("test=123&data=456");
 
-            WebBrowser.LoadUrlWithPostData("https://cefsharp.com/PostDataTest.html", postData);
+            WebBrowser.LoadUrlWithPostData("https://fluxonautbrowser.com/PostDataTest.html", postData);
         }
 
         protected void Set<T>(ref T field, T value, [CallerMemberName] string propertyName = null)

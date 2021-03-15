@@ -242,7 +242,7 @@ namespace Fluxonaut
                     IOThreadTaskFactory = gcnew TaskFactory(gcnew CefTaskScheduler(TID_IO));
                     FileThreadTaskFactory = gcnew TaskFactory(gcnew CefTaskScheduler(TID_FILE));
 
-                    //Allows us to execute Tasks on the CEF UI thread in CefSharp.dll
+                    //Allows us to execute Tasks on the CEF UI thread in Fluxonaut.Browser.dll
                     CefThread::Initialize(UIThreadTaskFactory, gcnew Func<bool>(&CurrentOnUiThread));
 
                     //To allow FolderSchemeHandlerFactory to access GetMimeType we pass in a Func
@@ -482,8 +482,8 @@ namespace Fluxonaut
                 /// Shuts down CefSharp and the underlying CEF infrastructure. This method is safe to call multiple times; it will only
                 /// shut down CEF on the first call (all subsequent calls will be ignored).
                 /// This method should be called on the main application thread to shut down the CEF browser process before the application exits. 
-                /// If you are Using CefSharp.OffScreen then you must call this explicitly before your application exits or it will hang.
-                /// This method must be called on the same thread as Initialize. If you don't call Shutdown explicitly then CefSharp.Wpf and CefSharp.WinForms
+                /// If you are Using Fluxonaut.Browser.OffScreen then you must call this explicitly before your application exits or it will hang.
+                /// This method must be called on the same thread as Initialize. If you don't call Shutdown explicitly then Fluxonaut.Browser.Wpf and Fluxonaut.Browser.WinForms
                 /// versions will do their best to call Shutdown for you, if your application is having trouble closing then call thus explicitly.
                 /// </summary>
                 static void Shutdown()
@@ -766,7 +766,7 @@ namespace Fluxonaut
                 /// platform-specific CDM binary distribution from Google, extracting the
                 /// contents, and building the required directory structure on the local machine.
                 /// The <see cref="CefSharp::IBrowserHost::StartDownload"/> method class can be used
-                /// to implement this functionality in CefSharp. Contact Google via
+                /// to implement this functionality in FluxonautBrowser. Contact Google via
                 /// https://www.widevine.com/contact.html for details on CDM download.
                 /// 
                 /// 
